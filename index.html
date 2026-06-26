@@ -211,15 +211,20 @@
   .shop:active{transform:scale(.99);}
   .retry{display:block;width:100%;text-align:center;margin-top:14px;color:var(--muted);font-size:14.5px;font-weight:600;padding:8px;}
 
-  /* incoming-share banner */
-  .invite{
+  /* intro / share-arrival panel */
+  .hero{
     max-width:520px;margin:0 auto 16px;background:linear-gradient(180deg,#fff,#fbfbfd);
-    border:1px solid var(--hairline);border-radius:18px;padding:14px 16px;
-    display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);animation:rise .4s var(--ease) both;
+    border:1px solid var(--hairline);border-radius:18px;padding:16px 18px;
+    display:flex;align-items:center;gap:14px;box-shadow:var(--shadow);animation:rise .4s var(--ease) both;
   }
-  .invite .ico{font-size:22px;}
-  .invite p{margin:0;font-size:14px;line-height:1.4;}
-  .invite b{font-weight:700;}
+  .hero .ico{flex:none;display:flex;align-items:center;justify-content:center;
+    width:42px;height:42px;border-radius:12px;background:var(--bg);color:var(--slate);}
+  .hero .ico svg{width:22px;height:26px;display:block;}
+  .hero .ico .em{font-size:22px;line-height:1;}
+  .hero .txt{min-width:0;}
+  .hero .t{margin:0;font-size:16px;font-weight:700;letter-spacing:-.02em;}
+  .hero .s{margin:2px 0 0;font-size:13.5px;color:var(--muted);line-height:1.45;}
+  .hero .s b{color:var(--ink);font-weight:700;}
 
   /* cookie consent */
   .cookie{
@@ -249,6 +254,11 @@
   footer a{color:var(--muted);text-decoration:none;}
   footer a:hover{color:var(--ink);}
   footer .dot{margin:0 7px;opacity:.5;}
+  footer .affiliate{
+    max-width:520px;margin:12px auto 0;padding:0 4px;
+    font-size:11px;line-height:1.5;color:var(--muted);opacity:.8;
+  }
+  footer .affiliate[hidden]{display:none;}
 
   .toast{
     position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);
@@ -283,9 +293,12 @@
 
 <main>
   <div class="stage">
-    <div class="invite" id="invite" hidden>
-      <span class="ico">🔥</span>
-      <p id="inviteText"></p>
+    <div class="hero" id="hero">
+      <span class="ico" id="heroIco"><svg viewBox="0 0 100 90" aria-hidden="true"><circle cx="50" cy="30" r="19" fill="none" stroke="currentColor" stroke-width="11"/><line x1="50" y1="52" x2="50" y2="79" stroke="currentColor" stroke-width="11" stroke-linecap="round"/></svg></span>
+      <div class="txt">
+        <p class="t" id="heroTitle"></p>
+        <p class="s" id="heroSub"></p>
+      </div>
     </div>
 
     <div class="scoreline">
@@ -324,6 +337,7 @@
   <a href="mailto:onlyonecorpceo@gmail.com">onlyonecorpceo@gmail.com</a>
   <span class="dot">·</span>
   © 2026 OnlyOne
+  <p class="affiliate" id="affiliate" hidden>이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
 </footer>
 
 <script>
@@ -361,7 +375,9 @@ var T = {
        cookieSoft:'<b>쿠키 사용 안내.</b> 더 나은 서비스를 위해 방문 통계용 쿠키를 사용해요.',
        accept:'동의', decline:'거부', ok:'확인',
        tagline:'호기심을 클릭하세요',
-       invite:function(n){return "<b>친구가 "+n+"연속</b>에 도전했어요. 깰 수 있나요?";},
+       heroTitle:'그거알아?', heroSub:'동서양 상식 <b>300문제</b> · 연속 정답에 도전하세요',
+       inviteTitle:'도전장이 도착했어요',
+       invite:function(n){return "친구가 <b>"+n+"연속</b>을 기록했어요. 깰 수 있나요?";},
        east:'동양 상식', west:'서양 상식', sci:'과학 상식' },
   en:{ streak:'streak', best:'best', next:'Next', truth:'True', falseTxt:'False',
        answerWas:'Answer:', tagPicked:'You', tagAns:'Correct',
@@ -376,7 +392,9 @@ var T = {
        cookieSoft:'<b>Cookie notice.</b> We use cookies for visit analytics to improve the experience.',
        accept:'Accept', decline:'Decline', ok:'OK',
        tagline:'Click your curiosity',
-       invite:function(n){return "<b>A friend hit "+n+" in a row.</b> Can you beat it?";},
+       heroTitle:'Did You Know?', heroSub:'<b>300</b> East–West trivia questions · chase your streak',
+       inviteTitle:'You’ve been challenged',
+       invite:function(n){return "A friend hit <b>"+n+" in a row.</b> Can you beat it?";},
        east:'East', west:'West', sci:'Science' }
 };
 
@@ -969,8 +987,27 @@ function applyLang(){
   $('lblStreak').textContent=L.streak;
   $('lblBest').textContent=L.best;
   $('footTagline').textContent=L.tagline;
+  renderHero();
+  // 쿠팡 고지문은 한글 모드에서만 노출
+  $('affiliate').hidden = (lang!=='ko');
   setCookieText();
   if(currentItemIndex>=0) render(Q[currentItemIndex]); // re-render current if mid-question
+}
+
+/* ----- hero panel (intro, or share-arrival challenge) ----- */
+var inviteStreak = 0; // >0 이면 공유 링크로 도착한 상태
+function renderHero(){
+  var L=T[lang];
+  var ico=$('heroIco');
+  if(inviteStreak>0){
+    ico.innerHTML='<span class="em">🔥</span>';
+    $('heroTitle').textContent=L.inviteTitle;
+    $('heroSub').innerHTML=L.invite(inviteStreak);
+  } else {
+    ico.innerHTML='<svg viewBox="0 0 100 90" aria-hidden="true"><circle cx="50" cy="30" r="19" fill="none" stroke="currentColor" stroke-width="11"/><line x1="50" y1="52" x2="50" y2="79" stroke="currentColor" stroke-width="11" stroke-linecap="round"/></svg>';
+    $('heroTitle').textContent=L.heroTitle;
+    $('heroSub').innerHTML=L.heroSub;
+  }
 }
 var currentItemIndex=-1;
 // wrap render to remember current item
@@ -1017,8 +1054,8 @@ function checkInvite(){
   var p=new URLSearchParams(location.search);
   var s=parseInt(p.get('s')||'',10);
   if(s>0){
-    $('inviteText').innerHTML=T[lang].invite(s);
-    $('invite').hidden=false;
+    inviteStreak=s;
+    renderHero();
     track('arrive_from_share',{target:s});
   }
 }
@@ -1033,3 +1070,4 @@ showCookieIfNeeded();
 </script>
 </body>
 </html>
+
