@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>그거알아? · Did You Know? — OnlyOne</title>
+<meta name="description" content="동서양 상식 퀴즈. 연속 정답에 도전하고 인증서를 받아보세요. An East–West trivia quiz by OnlyOne." />
+<meta property="og:title" content="그거알아? · Did You Know?" />
+<meta property="og:description" content="연속 정답에 도전! 당신의 상식 기록은 몇 연속? Challenge your trivia streak." />
+<meta property="og:type" content="website" />
+
+<!-- ===== Google Analytics 4 + Consent Mode v2 ===== -->
+<!-- TODO: 이 사이트 전용 측정 ID로 교체 (GA4 OnlyOne 속성 > 데이터 스트림) -->
+<script>
+  var GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
+  // 지역 추정(EEA/UK는 옵트인 필수, 그 외는 분석 기본 허용)
+  var TZ = (Intl.DateTimeFormat().resolvedOptions().timeZone || '');
+  var IS_STRICT = /^Europe\//.test(TZ);
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: IS_STRICT ? 'denied' : 'granted',
+    wait_for_update: 500
+  });
+  gtag('js', new Date());
+  gtag('config', GA_MEASUREMENT_ID, { anonymize_ip: true });
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+
+<style>
+  :root{
+    --ink:#1d1d1f;
+    --muted:#6e6e73;
+    --hairline:rgba(0,0,0,.10);
+    --surface:#ffffff;
+    --bg:#f5f5f7;
+    --slate:#3d444b;          /* OnlyOne 로고 색 */
+    --blue:#0071e3;
+    --green:#34c759;
+    --red:#ff3b30;
+    --radius:22px;
+    --shadow:0 1px 2px rgba(0,0,0,.04), 0 12px 40px rgba(0,0,0,.06);
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue","Pretendard","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    min-height:100dvh;
+    display:flex;flex-direction:column;
+  }
+  a{color:inherit;}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+
+  /* ---- Top bar ---- */
+  .bar{
+    position:sticky;top:0;z-index:30;
+    backdrop-filter:saturate(180%) blur(20px);
+    -webkit-backdrop-filter:saturate(180%) blur(20px);
+    background:rgba(245,245,247,.8);
+    border-bottom:1px solid var(--hairline);
+  }
+  .bar-in{
+    max-width:600px;margin:0 auto;padding:11px 18px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--slate);}
+  .brand svg{display:block;width:20px;height:24px;}
+  .brand b{font-weight:600;font-size:16px;letter-spacing:-.02em;}
+  .controls{display:flex;align-items:center;gap:8px;}
+  .lang{
+    display:inline-flex;border:1px solid var(--hairline);border-radius:999px;
+    overflow:hidden;background:var(--surface);
+  }
+  .lang button{padding:5px 11px;font-size:12.5px;font-weight:600;color:var(--muted);transition:.2s var(--ease);}
+  .lang button.on{background:var(--ink);color:#fff;}
+
+  /* ---- Layout ---- */
+  main{flex:1;display:flex;justify-content:center;padding:26px 18px 40px;}
+  .stage{width:100%;max-width:520px;}
+
+  .scoreline{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    margin-bottom:16px;font-size:14px;color:var(--muted);
+  }
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--surface);border:1px solid var(--hairline);
+    padding:6px 13px;border-radius:999px;font-weight:600;font-variant-numeric:tabular-nums;
+  }
+  .pill .n{color:var(--ink);}
+  .flame{color:#ff7a18;}
+
+  .card{
+    background:var(--surface);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:30px 24px 26px;
+    animation:rise .45s var(--ease) both;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(10px) scale(.99);}to{opacity:1;transform:none;}}
+
+  .cat{
+    display:inline-block;font-size:12px;font-weight:600;letter-spacing:.02em;
+    color:var(--muted);background:var(--bg);border:1px solid var(--hairline);
+    padding:4px 11px;border-radius:999px;margin-bottom:16px;
+  }
+  .q{font-size:23px;font-weight:600;letter-spacing:-.02em;line-height:1.34;margin:0 0 22px;word-break:keep-all;}
+
+  .opts{display:flex;flex-direction:column;gap:10px;}
+  .opts.ox{flex-direction:row;}
+  .opt{
+    border:1px solid var(--hairline);background:var(--surface);
+    border-radius:16px;padding:16px 18px;font-size:16.5px;font-weight:500;
+    text-align:left;transition:.18s var(--ease);position:relative;
+    display:flex;align-items:center;gap:12px;color:var(--ink);
+  }
+  .opts.ox .opt{flex:1;justify-content:center;flex-direction:column;gap:6px;padding:22px 12px;text-align:center;}
+  .opt .glyph{font-size:30px;font-weight:700;line-height:1;}
+  .opt:hover:not(:disabled){border-color:var(--ink);transform:translateY(-1px);}
+  .opt:active:not(:disabled){transform:scale(.99);}
+  .opt:disabled{cursor:default;}
+  .opt.correct{border-color:var(--green);background:rgba(52,199,89,.10);color:#1c7a37;}
+  .opt.wrong{border-color:var(--red);background:rgba(255,59,48,.09);color:#c4271d;}
+  .opt.dim{opacity:.45;}
+  .opt .tag{margin-left:auto;font-size:13px;font-weight:700;}
+
+  .explain{
+    margin-top:18px;padding:15px 16px;border-radius:14px;background:var(--bg);
+    font-size:14.5px;color:var(--muted);line-height:1.5;
+    animation:rise .35s var(--ease) both;
+  }
+  .explain b{color:var(--ink);font-weight:600;}
+
+  .next{
+    margin-top:18px;width:100%;background:var(--ink);color:#fff;
+    border-radius:14px;padding:15px;font-size:16px;font-weight:600;
+    transition:.2s var(--ease);
+  }
+  .next:hover{opacity:.88;}
+  .next:active{transform:scale(.99);}
+
+  /* ---- Result / Certificate overlay ---- */
+  .scrim{
+    position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.32);
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    display:flex;align-items:flex-end;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity .3s var(--ease);
+  }
+  .scrim.show{opacity:1;pointer-events:auto;}
+  .sheet{
+    width:100%;max-width:520px;background:var(--bg);
+    border-radius:26px 26px 0 0;padding:8px 18px 26px;
+    transform:translateY(20px);transition:transform .35s var(--ease);
+    max-height:92dvh;overflow:auto;
+  }
+  .scrim.show .sheet{transform:none;}
+  @media(min-width:560px){
+    .scrim{align-items:center;}
+    .sheet{border-radius:26px;margin:18px;}
+  }
+  .grip{width:38px;height:5px;border-radius:3px;background:rgba(0,0,0,.16);margin:8px auto 14px;}
+
+  .result-head{text-align:center;margin-bottom:6px;}
+  .result-head h2{font-size:22px;font-weight:700;letter-spacing:-.02em;margin:0 0 4px;}
+  .result-head p{margin:0;color:var(--muted);font-size:14.5px;}
+
+  /* certificate */
+  .cert{
+    background:var(--surface);border:1px solid var(--hairline);border-radius:20px;
+    padding:30px 24px;margin:16px 0;text-align:center;position:relative;overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .cert::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(120% 80% at 50% 0%, rgba(0,113,227,.06), transparent 60%);
+    pointer-events:none;
+  }
+  .cert .seal{color:var(--slate);margin-bottom:12px;}
+  .cert .seal svg{width:34px;height:42px;}
+  .cert .kicker{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+  .cert .big{font-size:64px;font-weight:800;letter-spacing:-.04em;line-height:1;margin:10px 0 2px;font-variant-numeric:tabular-nums;
+    background:linear-gradient(180deg,var(--ink),var(--slate));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .cert .unit{font-size:15px;color:var(--muted);font-weight:600;margin-bottom:14px;}
+  .cert .rank{display:inline-block;font-size:15px;font-weight:700;color:var(--blue);
+    border:1px solid rgba(0,113,227,.25);background:rgba(0,113,227,.06);padding:6px 14px;border-radius:999px;}
+  .cert .meta{margin-top:16px;font-size:11.5px;color:var(--muted);letter-spacing:.02em;
+    display:flex;justify-content:space-between;border-top:1px solid var(--hairline);padding-top:12px;}
+
+  .recap{font-size:14px;color:var(--muted);text-align:center;margin:2px 0 4px;}
+  .recap b{color:var(--ink);font-weight:600;}
+
+  .actions{display:flex;gap:10px;margin-top:6px;}
+  .actions button{flex:1;border-radius:14px;padding:14px;font-size:15px;font-weight:600;transition:.2s var(--ease);}
+  .btn-share{background:var(--blue);color:#fff;}
+  .btn-save{background:var(--surface);border:1px solid var(--hairline);color:var(--ink);}
+  .actions button:active{transform:scale(.98);}
+
+  .shop{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    margin-top:12px;width:100%;border-radius:14px;padding:14px;
+    background:var(--ink);color:#fff;font-size:15px;font-weight:600;text-decoration:none;
+    transition:.2s var(--ease);
+  }
+  .shop:active{transform:scale(.99);}
+  .retry{display:block;width:100%;text-align:center;margin-top:14px;color:var(--muted);font-size:14.5px;font-weight:600;padding:8px;}
+
+  /* incoming-share banner */
+  .invite{
+    max-width:520px;margin:0 auto 16px;background:linear-gradient(180deg,#fff,#fbfbfd);
+    border:1px solid var(--hairline);border-radius:18px;padding:14px 16px;
+    display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);animation:rise .4s var(--ease) both;
+  }
+  .invite .ico{font-size:22px;}
+  .invite p{margin:0;font-size:14px;line-height:1.4;}
+  .invite b{font-weight:700;}
+
+  /* cookie consent */
+  .cookie{
+    position:fixed;left:0;right:0;bottom:0;z-index:60;padding:14px;
+    display:flex;justify-content:center;transform:translateY(120%);
+    transition:transform .4s var(--ease);pointer-events:none;
+  }
+  .cookie.show{transform:none;pointer-events:auto;}
+  .cookie-in{
+    width:100%;max-width:520px;background:var(--surface);border:1px solid var(--hairline);
+    border-radius:18px;box-shadow:var(--shadow);padding:16px 18px;
+  }
+  .cookie-in p{margin:0 0 12px;font-size:13.5px;color:var(--muted);line-height:1.5;}
+  .cookie-in p b{color:var(--ink);font-weight:600;}
+  .cookie-btns{display:flex;gap:10px;}
+  .cookie-btns button{flex:1;border-radius:12px;padding:11px;font-size:14px;font-weight:600;transition:.2s var(--ease);}
+  .c-accept{background:var(--ink);color:#fff;}
+  .c-decline{background:var(--bg);color:var(--ink);border:1px solid var(--hairline);}
+  .cookie-btns button:active{transform:scale(.98);}
+  .cookie .more{display:inline;color:var(--blue);cursor:pointer;font-weight:600;}
+
+  /* footer */
+  footer{
+    border-top:1px solid var(--hairline);padding:22px 18px 30px;text-align:center;
+    color:var(--muted);font-size:12.5px;
+  }
+  footer a{color:var(--muted);text-decoration:none;}
+  footer a:hover{color:var(--ink);}
+  footer .dot{margin:0 7px;opacity:.5;}
+
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);
+    background:var(--ink);color:#fff;padding:11px 18px;border-radius:999px;
+    font-size:14px;font-weight:600;opacity:0;pointer-events:none;z-index:80;
+    transition:.3s var(--ease);
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0);}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;}
+  }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" id="brandLink" href="https://main.onlyonecorpceo.workers.dev/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 100 90" aria-hidden="true"><circle cx="50" cy="30" r="19" fill="none" stroke="currentColor" stroke-width="11"/><line x1="50" y1="52" x2="50" y2="79" stroke="currentColor" stroke-width="11" stroke-linecap="round"/></svg>
+      <b>OnlyOne</b>
+    </a>
+    <div class="controls">
+      <div class="lang" role="group" aria-label="Language">
+        <button id="langKo">한</button>
+        <button id="langEn">EN</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="stage">
+    <div class="invite" id="invite" hidden>
+      <span class="ico">🔥</span>
+      <p id="inviteText"></p>
+    </div>
+
+    <div class="scoreline">
+      <span class="pill"><span class="flame">🔥</span> <span class="n" id="streak">0</span> <span id="lblStreak">연속</span></span>
+      <span class="pill" id="lblBestWrap"><span id="lblBest">최고</span> <span class="n" id="best">0</span></span>
+    </div>
+
+    <div class="card" id="qcard"><!-- quiz injected --></div>
+  </div>
+</main>
+
+<!-- Result / certificate -->
+<div class="scrim" id="scrim">
+  <div class="sheet">
+    <div class="grip"></div>
+    <div id="sheetBody"></div>
+  </div>
+</div>
+
+<!-- Cookie consent -->
+<div class="cookie" id="cookie">
+  <div class="cookie-in">
+    <p id="cookieText"></p>
+    <div class="cookie-btns">
+      <button class="c-decline" id="cDecline"></button>
+      <button class="c-accept" id="cAccept"></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  <span id="footTagline">호기심을 클릭하세요</span>
+  <span class="dot">·</span>
+  <a href="mailto:onlyonecorpceo@gmail.com">onlyonecorpceo@gmail.com</a>
+  <span class="dot">·</span>
+  © 2026 OnlyOne
+</footer>
+
+<script>
+/* =========================================================
+   그거알아? — OnlyOne trivia
+   single-file · vanilla · bilingual (ko/en)
+   ========================================================= */
+
+/* ----- affiliate / shop links (나중에 제휴링크로 교체) ----- */
+var COUPANG_URL = 'https://www.coupang.com/np/search?q=%EC%83%81%EC%8B%9D%20%EC%B1%85'; // TODO: 쿠팡 파트너스 링크로 교체
+var AMAZON_URL  = 'https://www.amazon.com/s?k=general+knowledge+trivia+books';            // TODO: Amazon Associates 링크로 교체
+
+/* ----- safe storage (Cloudflare에선 정상, 차단 환경에선 메모리 폴백) ----- */
+var mem = {};
+var store = {
+  get:function(k){ try{ return localStorage.getItem(k); }catch(e){ return (k in mem)?mem[k]:null; } },
+  set:function(k,v){ try{ localStorage.setItem(k,v); }catch(e){ mem[k]=v; } }
+};
+
+/* ----- analytics helper ----- */
+function track(name, params){ try{ gtag('event', name, params||{}); }catch(e){} }
+
+/* ----- i18n strings ----- */
+var T = {
+  ko:{ streak:'연속', best:'최고', next:'다음 문제', truth:'맞아요', falseTxt:'아니에요',
+       answerWas:'정답은', tagPicked:'내 선택', tagAns:'정답',
+       certKicker:'그거알아? 인증서', unit:'연속 정답', issued:'발급',
+       resTitle:'축하해요!', resSub:function(n){return n+'연속 정답을 기록했어요.';},
+       res0Title:'아쉬워요!', res0Sub:'한 문제부터 다시 쌓아봐요.',
+       share:'공유하기', save:'이미지 저장', retry:'다시 도전',
+       shop:'상식 채우러 가기 (쿠팡)',
+       shareText:function(n){return "나 '그거알아?'에서 "+n+"연속 정답! 너도 도전해봐 👀";},
+       copied:'링크를 복사했어요', saved:'이미지를 저장했어요',
+       cookie:'<b>쿠키 사용 안내.</b> 방문 통계(Google Analytics)를 위해 쿠키를 사용해요. 동의하시겠어요?',
+       cookieSoft:'<b>쿠키 사용 안내.</b> 더 나은 서비스를 위해 방문 통계용 쿠키를 사용해요.',
+       accept:'동의', decline:'거부', ok:'확인',
+       tagline:'호기심을 클릭하세요',
+       invite:function(n){return "<b>친구가 "+n+"연속</b>에 도전했어요. 깰 수 있나요?";},
+       east:'동양 상식', west:'서양 상식', sci:'과학 상식' },
+  en:{ streak:'streak', best:'best', next:'Next', truth:'True', falseTxt:'False',
+       answerWas:'Answer:', tagPicked:'You', tagAns:'Correct',
+       certKicker:'Did You Know? Certificate', unit:'in a row', issued:'Issued',
+       resTitle:'Nice run!', resSub:function(n){return 'You got '+n+' correct in a row.';},
+       res0Title:'So close!', res0Sub:'Start a fresh streak.',
+       share:'Share', save:'Save image', retry:'Try again',
+       shop:'Brush up on trivia (Amazon)',
+       shareText:function(n){return "I hit a "+n+"-streak on 'Did You Know?' Can you beat it? 👀";},
+       copied:'Link copied', saved:'Image saved',
+       cookie:'<b>Cookie notice.</b> We use cookies for visit analytics (Google Analytics). Do you consent?',
+       cookieSoft:'<b>Cookie notice.</b> We use cookies for visit analytics to improve the experience.',
+       accept:'Accept', decline:'Decline', ok:'OK',
+       tagline:'Click your curiosity',
+       invite:function(n){return "<b>A friend hit "+n+" in a row.</b> Can you beat it?";},
+       east:'East', west:'West', sci:'Science' }
+};
+
+/* ----- ranks by streak ----- */
+function rankOf(n){
+  if(n>=20) return {ko:'전설',en:'Legend'};
+  if(n>=15) return {ko:'상식왕',en:'Genius'};
+  if(n>=10) return {ko:'척척박사',en:'Whiz'};
+  if(n>=6)  return {ko:'탐구자',en:'Explorer'};
+  if(n>=3)  return {ko:'입문자',en:'Rookie'};
+  return {ko:'새싹',en:'Sprout'};
+}
+
+/* ----- questions (100) -----
+   r: 'E' east / 'W' west / 'S' science
+   t: 'ox' (a:'O'|'X')  or  'mc' (a: index 0..2)
+*/
+var Q = [
+ {r:'W',t:'ox',a:'X',q:{ko:'만리장성은 우주에서 맨눈으로 보인다.',en:'The Great Wall of China is visible to the naked eye from space.'},e:{ko:'맨눈으로는 보이지 않아요. 흔한 오해예요.',en:'It is not — a common myth.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'꿀은 잘 보관하면 수천 년이 지나도 상하지 않는다.',en:'Honey can last thousands of years without spoiling.'},e:{ko:'고대 무덤에서 나온 꿀도 먹을 수 있었대요.',en:'Edible honey was found in ancient tombs.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'피아노를 발명한 나라는?',en:'Where was the piano invented?'},o:{ko:['이탈리아','독일','오스트리아'],en:['Italy','Germany','Austria']},e:{ko:'1700년경 이탈리아의 크리스토포리가 발명했어요.',en:'By Cristofori in Italy around 1700.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'사람 몸에서 가장 큰 장기는 피부다.',en:'The largest human organ is the skin.'},e:{ko:'면적·무게 모두 피부가 1위예요.',en:'Skin wins by both area and weight.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'세계에서 가장 높은 산(해발)은?',en:'What is the tallest mountain above sea level?'},o:{ko:['에베레스트','K2','킬리만자로'],en:['Everest','K2','Kilimanjaro']},e:{ko:'에베레스트, 약 8,849m예요.',en:'Everest, about 8,849m.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'박쥐는 눈이 완전히 멀어 아무것도 못 본다.',en:'Bats are completely blind.'},e:{ko:'대부분 볼 수 있어요. 초음파는 보조 수단이에요.',en:'Most can see; echolocation just helps.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'한글을 창제한 왕은?',en:'Which king created Hangul?'},o:{ko:['세종대왕','태종','정조'],en:['Sejong the Great','Taejong','Jeongjo']},e:{ko:'세종대왕이 1443년에 만들었어요.',en:'King Sejong, in 1443.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'금붕어의 기억력은 3초밖에 안 된다.',en:'A goldfish only remembers things for 3 seconds.'},e:{ko:'몇 달까지 기억한다는 연구가 있어요.',en:'Studies show months of memory.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'태양계에서 가장 큰 행성은?',en:'The largest planet in our solar system?'},o:{ko:['목성','토성','지구'],en:['Jupiter','Saturn','Earth']},e:{ko:'목성이에요. 지구의 약 1,300배 부피.',en:'Jupiter — about 1,300× Earth’s volume.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'거미는 곤충이다.',en:'A spider is an insect.'},e:{ko:'다리 8개의 거미강이에요. 곤충은 6개.',en:'It’s an arachnid (8 legs); insects have 6.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'모나리자를 그린 화가는?',en:'Who painted the Mona Lisa?'},o:{ko:['레오나르도 다빈치','미켈란젤로','라파엘로'],en:['Leonardo da Vinci','Michelangelo','Raphael']},e:{ko:'레오나르도 다빈치의 작품이에요.',en:'Leonardo da Vinci.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'토마토는 식물학적으로 과일이다.',en:'Botanically, a tomato is a fruit.'},e:{ko:'씨를 품은 열매라 과일이에요.',en:'It develops from a flower and holds seeds.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'첨성대가 있는 도시는?',en:'Which city has the Cheomseongdae observatory?'},o:{ko:['경주','부여','공주'],en:['Gyeongju','Buyeo','Gongju']},e:{ko:'신라의 수도였던 경주에 있어요.',en:'In Gyeongju, the old Silla capital.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'번개는 같은 곳에 두 번 치지 않는다.',en:'Lightning never strikes the same place twice.'},e:{ko:'높은 건물엔 여러 번 떨어져요.',en:'Tall towers get hit many times.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'피라미드를 세운 고대 문명은?',en:'Which ancient civilization built the great pyramids?'},o:{ko:['이집트','메소포타미아','그리스'],en:['Egypt','Mesopotamia','Greece']},e:{ko:'고대 이집트 문명이에요.',en:'Ancient Egypt.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'문어는 심장이 3개다.',en:'An octopus has three hearts.'},e:{ko:'두 개는 아가미, 하나는 온몸으로 피를 보내요.',en:'Two for the gills, one for the body.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'베토벤의 직업은?',en:'What was Beethoven’s profession?'},o:{ko:['작곡가','화가','과학자'],en:['Composer','Painter','Scientist']},e:{ko:'독일의 작곡가예요.',en:'A German composer.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'우리가 보는 별빛은 사실 과거의 빛이다.',en:'Starlight we see is actually light from the past.'},e:{ko:'먼 별일수록 더 오래된 빛이에요.',en:'Farther stars = older light.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'김치의 가장 대표적인 주재료는?',en:'The most iconic main ingredient of kimchi?'},o:{ko:['배추','오이','무'],en:['Napa cabbage','Cucumber','Radish']},e:{ko:'배추김치가 가장 대표적이에요.',en:'Napa cabbage kimchi is the classic.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'다이아몬드는 천연 물질 중 가장 단단하다.',en:'Diamond is the hardest natural material.'},e:{ko:'모스 경도 10으로 최고예요.',en:'Mohs hardness 10 — the top.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'미국에 자유의 여신상을 선물한 나라는?',en:'Which country gifted the Statue of Liberty to the US?'},o:{ko:['프랑스','영국','스페인'],en:['France','UK','Spain']},e:{ko:'프랑스가 1886년에 선물했어요.',en:'France, in 1886.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'인간은 뇌의 10%만 사용한다.',en:'Humans only use 10% of their brain.'},e:{ko:'근거 없는 통념이에요. 거의 다 써요.',en:'A myth — we use nearly all of it.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'거북선을 만든 장군은?',en:'Which admiral built the turtle ship?'},o:{ko:['이순신','강감찬','을지문덕'],en:['Yi Sun-sin','Gang Gam-chan','Eulji Mundeok']},e:{ko:'이순신 장군이에요.',en:'Admiral Yi Sun-sin.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'소리는 진공(우주)에서 전달되지 않는다.',en:'Sound cannot travel through the vacuum of space.'},e:{ko:'매질이 없어 소리가 못 가요.',en:'No medium, no sound.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'희곡 \u2018햄릿\u2019을 쓴 작가는?',en:'Who wrote the play “Hamlet”?'},o:{ko:['셰익스피어','괴테','단테'],en:['Shakespeare','Goethe','Dante']},e:{ko:'윌리엄 셰익스피어예요.',en:'William Shakespeare.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'달은 스스로 빛을 낸다.',en:'The Moon produces its own light.'},e:{ko:'태양빛을 반사하는 거예요.',en:'It reflects sunlight.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'1988년 하계 올림픽이 열린 도시는?',en:'Which city hosted the 1988 Summer Olympics?'},o:{ko:['서울','부산','도쿄'],en:['Seoul','Busan','Tokyo']},e:{ko:'서울이에요.',en:'Seoul.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'바나나는 식물학적으로 베리(berry)다.',en:'Botanically, a banana is a berry.'},e:{ko:'의외로 딸기는 베리가 아니에요.',en:'And, oddly, strawberries are not.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'상대성 이론으로 유명한 과학자는?',en:'Who is famous for the theory of relativity?'},o:{ko:['아인슈타인','뉴턴','갈릴레오'],en:['Einstein','Newton','Galileo']},e:{ko:'알베르트 아인슈타인이에요.',en:'Albert Einstein.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'에펠탑은 여름에 약간 더 커진다.',en:'The Eiffel Tower grows slightly taller in summer.'},e:{ko:'열팽창으로 약 15cm 늘어나요.',en:'Heat expands the iron ~15cm.'}},
+ {r:'E',t:'ox',a:'X',q:{ko:'펭귄은 북극에 산다.',en:'Penguins live in the Arctic (North Pole).'},e:{ko:'대부분 남반구, 특히 남극에 살아요.',en:'They live in the Southern Hemisphere.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'2024년 기준 인구가 가장 많은 나라는?',en:'Most populous country (as of 2024)?'},o:{ko:['인도','중국','미국'],en:['India','China','USA']},e:{ko:'2023년 인도가 중국을 추월했어요.',en:'India overtook China in 2023.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'사람의 지문은 사람마다 모두 다르다.',en:'Every person’s fingerprints are unique.'},e:{ko:'일란성 쌍둥이도 달라요.',en:'Even identical twins differ.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'대한민국의 수도는?',en:'The capital of South Korea?'},o:{ko:['서울','인천','평양'],en:['Seoul','Incheon','Pyongyang']},e:{ko:'서울이에요.',en:'Seoul.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'상어는 포유류다.',en:'A shark is a mammal.'},e:{ko:'상어는 어류예요.',en:'Sharks are fish.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'피사의 사탑이 있는 나라는?',en:'Which country has the Leaning Tower of Pisa?'},o:{ko:['이탈리아','그리스','스페인'],en:['Italy','Greece','Spain']},e:{ko:'이탈리아예요.',en:'Italy.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'빛은 소리보다 빠르다.',en:'Light travels faster than sound.'},e:{ko:'그래서 번개가 천둥보다 먼저 보여요.',en:'That’s why we see lightning first.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'측우기를 처음 만든 시대는?',en:'In which era was the rain gauge (cheugugi) first made in Korea?'},o:{ko:['조선','고려','신라'],en:['Joseon','Goryeo','Silla']},e:{ko:'조선 세종 때예요.',en:'Joseon, under King Sejong.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'카멜레온은 기분이나 온도에 따라 색을 바꾸기도 한다.',en:'Chameleons change color partly by mood and temperature.'},e:{ko:'위장만이 아니라 소통·체온 조절도 해요.',en:'Not just camouflage — also signaling.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'만유인력 법칙으로 유명한 과학자는?',en:'Who is famous for the law of universal gravitation?'},o:{ko:['뉴턴','다윈','멘델'],en:['Newton','Darwin','Mendel']},e:{ko:'아이작 뉴턴이에요.',en:'Isaac Newton.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'낙타의 혹에는 물이 가득 차 있다.',en:'A camel’s hump is full of water.'},e:{ko:'사실은 지방이 들어 있어요.',en:'It actually stores fat.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'첫 번째 FIFA 월드컵 개최국은?',en:'Which country hosted the first FIFA World Cup?'},o:{ko:['우루과이','브라질','아르헨티나'],en:['Uruguay','Brazil','Argentina']},e:{ko:'1930년 우루과이예요.',en:'Uruguay, 1930.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'진화론을 체계화한 사람은?',en:'Who developed the theory of evolution by natural selection?'},o:{ko:['다윈','라마르크','멘델'],en:['Darwin','Lamarck','Mendel']},e:{ko:'찰스 다윈이에요.',en:'Charles Darwin.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'사람의 피는 몸속에서 파란색이다.',en:'Human blood is blue inside the body.'},e:{ko:'항상 빨간색이에요. 정맥이 파래 보일 뿐.',en:'Always red; veins just look blue.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'\u2018거문고\u2019는 어느 나라의 전통 현악기?',en:'The geomungo is a traditional string instrument of which country?'},o:{ko:['한국','중국','베트남'],en:['Korea','China','Vietnam']},e:{ko:'한국의 전통 악기예요.',en:'Korea.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'소금물은 맹물보다 더 빨리 끓는다.',en:'Salt water boils faster than plain water.'},e:{ko:'끓는점이 높아져 오히려 더 늦게 끓어요.',en:'Salt raises the boiling point.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'빅벤이 있는 도시는?',en:'Which city is home to Big Ben?'},o:{ko:['런던','파리','베를린'],en:['London','Paris','Berlin']},e:{ko:'영국 런던이에요.',en:'London.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'꿀벌(일벌)은 사람을 쏘면 보통 죽는다.',en:'A honeybee usually dies after stinging a human.'},e:{ko:'침이 빠지며 몸도 손상돼요.',en:'Its barbed sting tears free.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'훈민정음이 반포된 해는?',en:'When was Hunminjeongeum (Hangul) proclaimed?'},o:{ko:['1446년','1392년','1592년'],en:['1446','1392','1592']},e:{ko:'1446년에 반포됐어요.',en:'In 1446.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'화성은 \u2018붉은 행성\u2019으로 불린다.',en:'Mars is called the “Red Planet.”'},e:{ko:'표면의 산화철(녹) 때문이에요.',en:'Due to iron oxide (rust).'}},
+ {r:'W',t:'mc',a:0,q:{ko:'화가 파블로 피카소의 국적은?',en:'What was the nationality of painter Pablo Picasso?'},o:{ko:['스페인','프랑스','이탈리아'],en:['Spain','France','Italy']},e:{ko:'스페인 출신이에요.',en:'Spanish.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'코끼리는 점프를 할 수 없다.',en:'Elephants cannot jump.'},e:{ko:'네 발이 동시에 뜨지 못해요.',en:'They can’t get all feet airborne.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'거대 석상 \u2018모아이\u2019가 있는 섬은?',en:'Which island has the giant Moai statues?'},o:{ko:['이스터섬','하와이','타히티'],en:['Easter Island','Hawaii','Tahiti']},e:{ko:'칠레의 이스터섬(라파누이)이에요.',en:'Easter Island (Rapa Nui).'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'갓 태어난 아기는 어른보다 뼈 개수가 많다.',en:'Newborns have more bones than adults.'},e:{ko:'약 300개가 자라며 206개로 합쳐져요.',en:'~300 fuse down to 206.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'사물놀이에 쓰이지 않는 악기는?',en:'Which is NOT a samul nori instrument?'},o:{ko:['바이올린','꽹과리','장구'],en:['Violin','Kkwaenggwari','Janggu']},e:{ko:'사물놀이는 꽹과리·징·장구·북이에요.',en:'It uses four Korean percussion instruments.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'물은 언제나 100°C에서 끓는다.',en:'Water always boils at 100°C.'},e:{ko:'기압에 따라 달라져요. 높은 산에선 더 낮아요.',en:'It depends on air pressure.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'\u2018E=mc²\u2019은 무엇에 관한 식인가?',en:'What does “E=mc²” describe?'},o:{ko:['질량-에너지','중력','전기'],en:['Mass–energy','Gravity','Electricity']},e:{ko:'질량과 에너지의 관계예요.',en:'Mass–energy equivalence.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'기린의 목뼈 개수는 사람과 똑같다.',en:'A giraffe has the same number of neck bones as a human.'},e:{ko:'둘 다 7개예요. 길이만 다르죠.',en:'Both have 7 — just longer.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'\u2018고려청자\u2019로 유명한 나라는?',en:'Goryeo celadon is famous pottery from which country?'},o:{ko:['한국','중국','일본'],en:['Korea','China','Japan']},e:{ko:'한국 고려시대의 청자예요.',en:'Korea, Goryeo era.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'다 자란 해바라기는 하루 종일 해를 따라 돈다.',en:'Mature sunflowers track the sun all day.'},e:{ko:'어릴 때만 그래요. 다 자라면 동쪽을 향해요.',en:'Only young ones do; mature ones face east.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'1969년 첫 달 착륙에 쓰인 우주선은?',en:'Which mission first landed humans on the Moon in 1969?'},o:{ko:['아폴로 11호','제미니','보스토크'],en:['Apollo 11','Gemini','Vostok']},e:{ko:'아폴로 11호예요.',en:'Apollo 11.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'거미줄은 같은 굵기의 강철보다 인장강도가 강하다.',en:'Spider silk is stronger than steel of the same thickness.'},e:{ko:'무게 대비 인장강도가 매우 높아요.',en:'Pound for pound, very strong.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'비빔밥으로 가장 유명한 한국 도시는?',en:'Which Korean city is most famous for bibimbap?'},o:{ko:['전주','대구','광주'],en:['Jeonju','Daegu','Gwangju']},e:{ko:'전주비빔밥이 유명해요.',en:'Jeonju.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'박쥐는 스스로 나는 유일한 포유류다.',en:'Bats are the only mammals that truly fly.'},e:{ko:'날다람쥐는 활공일 뿐이에요.',en:'Flying squirrels only glide.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'콜로세움이 있는 도시는?',en:'Which city has the Colosseum?'},o:{ko:['로마','아테네','카이로'],en:['Rome','Athens','Cairo']},e:{ko:'이탈리아 로마예요.',en:'Rome, Italy.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'심장은 가슴의 완전히 왼쪽에 치우쳐 있다.',en:'The heart sits entirely on the left side of the chest.'},e:{ko:'가운데서 약간 왼쪽이에요.',en:'It’s centered, slightly left.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'한국의 전통 가옥을 부르는 말은?',en:'What is a traditional Korean house called?'},o:{ko:['한옥','이글루','게르'],en:['Hanok','Igloo','Ger']},e:{ko:'한옥이에요.',en:'Hanok.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'빛의 삼원색은 빨강·초록·파랑이다.',en:'The primary colors of light are red, green, and blue.'},e:{ko:'RGB로 모든 화면 색을 만들어요.',en:'RGB makes all screen colors.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'잠수함이 뜨고 가라앉는 데 핵심인 힘은?',en:'Which force is key to how submarines rise and sink?'},o:{ko:['부력','마찰력','자기력'],en:['Buoyancy','Friction','Magnetism']},e:{ko:'부력을 조절해 움직여요.',en:'They adjust buoyancy.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'단군 신화에 등장하는 두 동물은?',en:'Which two animals appear in the Dangun (Korean founding) myth?'},o:{ko:['곰과 호랑이','사자와 늑대','용과 봉황'],en:['Bear & tiger','Lion & wolf','Dragon & phoenix']},e:{ko:'곰이 사람이 되는 이야기예요.',en:'A bear becomes human.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'소리는 공기 중보다 물속에서 더 빠르게 전달된다.',en:'Sound travels faster in water than in air.'},e:{ko:'밀도가 높을수록 빨라요.',en:'Denser medium, faster sound.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'세계에서 가장 작은 대륙은?',en:'What is the smallest continent?'},o:{ko:['오세아니아(호주)','유럽','남극'],en:['Oceania (Australia)','Europe','Antarctica']},e:{ko:'오세아니아예요.',en:'Oceania.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'새는 공룡의 후손이라는 것이 현대 정설이다.',en:'Birds are considered descendants of dinosaurs.'},e:{ko:'수각류 공룡에서 진화했어요.',en:'Evolved from theropod dinosaurs.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'귀주대첩에서 거란을 물리친 고려 장군은?',en:'Which Goryeo general defeated the Khitan at Gwiju?'},o:{ko:['강감찬','이순신','김유신'],en:['Gang Gam-chan','Yi Sun-sin','Kim Yu-sin']},e:{ko:'강감찬 장군이에요.',en:'Gang Gam-chan.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'얼음은 같은 부피의 물보다 무겁다.',en:'Ice is heavier than the same volume of water.'},e:{ko:'얼음이 더 가벼워서 물에 떠요.',en:'Ice is less dense, so it floats.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'\u2018천일야화(아라비안나이트)\u2019의 배경 문화권은?',en:'The “Arabian Nights” comes from which cultural region?'},o:{ko:['중동','북유럽','남미'],en:['Middle East','Northern Europe','South America']},e:{ko:'중동·페르시아권 설화 모음이에요.',en:'Middle Eastern/Persian tales.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'사람 눈은 수백만 가지 색을 구별할 수 있다.',en:'The human eye can distinguish millions of colors.'},e:{ko:'대략 100만 가지 이상이에요.',en:'Roughly a million or more.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'광화문은 어느 궁궐의 정문인가?',en:'Gwanghwamun is the main gate of which palace?'},o:{ko:['경복궁','창덕궁','덕수궁'],en:['Gyeongbokgung','Changdeokgung','Deoksugung']},e:{ko:'경복궁의 정문이에요.',en:'Gyeongbokgung.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'토성만 고리를 가지고 있다.',en:'Only Saturn has rings.'},e:{ko:'목성·천왕성·해왕성에도 고리가 있어요.',en:'Jupiter, Uranus, Neptune too.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'\u2018햄버거\u2019의 어원이 된 독일 도시는?',en:'Which German city gave the “hamburger” its name?'},o:{ko:['함부르크','베를린','뮌헨'],en:['Hamburg','Berlin','Munich']},e:{ko:'함부르크에서 왔어요.',en:'From Hamburg.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'매운맛은 미각이 아니라 통각(아픔)에 가깝다.',en:'Spiciness is closer to a pain sensation than a taste.'},e:{ko:'캡사이신이 통증 수용체를 자극해요.',en:'Capsaicin triggers pain receptors.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'윷놀이에서 가장 많이 가는 끗수는?',en:'Which yut throw moves the most spaces?'},o:{ko:['모','윷','걸'],en:['Mo','Yut','Geol']},e:{ko:'모는 5칸, 윷은 4칸이에요.',en:'Mo = 5, Yut = 4.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'우주는 지금도 팽창하고 있다.',en:'The universe is still expanding.'},e:{ko:'먼 은하일수록 더 빨리 멀어져요.',en:'Distant galaxies recede faster.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'반전(反戰) 그림 \u2018게르니카\u2019를 그린 화가는?',en:'Who painted the anti-war work “Guernica”?'},o:{ko:['피카소','달리','마티스'],en:['Picasso','Dalí','Matisse']},e:{ko:'파블로 피카소예요.',en:'Pablo Picasso.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'닭은 짧은 거리는 날 수 있다.',en:'Chickens can fly short distances.'},e:{ko:'멀리는 못 가도 잠깐은 날아요.',en:'Brief, low flights only.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'추석에 먹는 대표 음식은?',en:'A signature food eaten on Chuseok (Korean harvest day)?'},o:{ko:['송편','떡국','팥죽'],en:['Songpyeon','Tteokguk','Patjuk']},e:{ko:'반달 모양 송편을 빚어요.',en:'Half-moon rice cakes, songpyeon.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'수성은 태양에서 가장 가까운 행성이다.',en:'Mercury is the closest planet to the Sun.'},e:{ko:'맞아요. 가장 안쪽 행성이에요.',en:'Yes, the innermost planet.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'가장 큰 고대 피라미드는?',en:'Which is the largest ancient pyramid?'},o:{ko:['기자의 대피라미드','사카라 피라미드','치첸이트사'],en:['Great Pyramid of Giza','Saqqara','Chichen Itza']},e:{ko:'기자의 대피라미드(쿠푸)예요.',en:'The Great Pyramid of Giza.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'재채기를 하면서 눈을 뜨고 있을 수 있다.',en:'You can keep your eyes open while sneezing.'},e:{ko:'반사적으로 거의 항상 감겨요.',en:'It’s a near-automatic reflex.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'설날에 먹는 대표 음식은?',en:'A signature food for Korean New Year (Seollal)?'},o:{ko:['떡국','송편','부럼'],en:['Tteokguk','Songpyeon','Bureom']},e:{ko:'떡국 한 그릇에 한 살 더 먹어요.',en:'Rice-cake soup, tteokguk.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'DNA는 이중 나선 구조다.',en:'DNA has a double-helix structure.'},e:{ko:'두 가닥이 꼬여 있어요.',en:'Two strands twisted together.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'조선의 물시계 \u2018자격루\u2019를 만든 인물은?',en:'Who built Joseon’s self-striking water clock (Jagyeongnu)?'},o:{ko:['장영실','정약용','허준'],en:['Jang Yeong-sil','Jeong Yak-yong','Heo Jun']},e:{ko:'과학자 장영실이에요.',en:'Jang Yeong-sil.'}},
+ {r:'S',t:'ox',a:'X',q:{ko:'바닷물은 마셔도 갈증 해소에 좋다.',en:'Drinking seawater is good for quenching thirst.'},e:{ko:'염분 때문에 오히려 탈수돼요.',en:'The salt dehydrates you.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'르네상스가 처음 꽃핀 나라는?',en:'In which country did the Renaissance begin?'},o:{ko:['이탈리아','프랑스','영국'],en:['Italy','France','England']},e:{ko:'14세기 이탈리아에서 시작됐어요.',en:'14th-century Italy.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'사람의 위산은 매우 강한 산성이다.',en:'Human stomach acid is very strongly acidic.'},e:{ko:'염산 성분으로 금속도 부식시킬 정도예요.',en:'Hydrochloric acid — quite corrosive.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'의학서 \u2018동의보감\u2019을 쓴 인물은?',en:'Who wrote the medical classic “Donguibogam”?'},o:{ko:['허준','이황','정약용'],en:['Heo Jun','Yi Hwang','Jeong Yak-yong']},e:{ko:'어의 허준이에요. 유네스코 기록유산.',en:'Heo Jun — a UNESCO heritage text.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'빛은 1초에 지구를 약 7바퀴 반 돈다.',en:'Light circles the Earth about 7.5 times in one second.'},e:{ko:'초속 약 30만 km예요.',en:'~300,000 km per second.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'\u2018행성\u2019에서 2006년 제외된 천체는?',en:'Which body was reclassified out of “planet” status in 2006?'},o:{ko:['명왕성','화성','금성'],en:['Pluto','Mars','Venus']},e:{ko:'명왕성은 왜소행성이 됐어요.',en:'Pluto became a dwarf planet.'}},
+ {r:'E',t:'ox',a:'O',q:{ko:'태권도는 한국에서 시작된 무술이다.',en:'Taekwondo is a martial art that originated in Korea.'},e:{ko:'올림픽 정식 종목이기도 해요.',en:'Also an Olympic sport.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'대한민국의 국화(나라꽃)는?',en:'What is South Korea’s national flower?'},o:{ko:['무궁화','벚꽃','진달래'],en:['Mugunghwa','Cherry blossom','Azalea']},e:{ko:'무궁화(無窮花)예요.',en:'The mugunghwa (rose of Sharon).'}},
+ // --- 세계 지리 ---
+ {r:'W',t:'mc',a:0,q:{ko:'일본의 수도는?',en:'What is the capital of Japan?'},o:{ko:['도쿄','교토','오사카'],en:['Tokyo','Kyoto','Osaka']},e:{ko:'도쿄예요.',en:'Tokyo.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'프랑스의 수도는?',en:'What is the capital of France?'},o:{ko:['파리','리옹','마르세유'],en:['Paris','Lyon','Marseille']},e:{ko:'파리예요.',en:'Paris.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'세계에서 가장 넓은 바다는?',en:'The largest ocean on Earth?'},o:{ko:['태평양','대서양','인도양'],en:['Pacific','Atlantic','Indian']},e:{ko:'태평양이에요.',en:'The Pacific.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'사하라 사막이 있는 대륙은?',en:'On which continent is the Sahara Desert?'},o:{ko:['아프리카','아시아','호주'],en:['Africa','Asia','Australia']},e:{ko:'아프리카예요.',en:'Africa.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'아마존 열대우림이 가장 많이 걸친 나라는?',en:'Which country holds most of the Amazon rainforest?'},o:{ko:['브라질','페루','콜롬비아'],en:['Brazil','Peru','Colombia']},e:{ko:'브라질이에요.',en:'Brazil.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'호주는 나라이면서 대륙이다.',en:'Australia is both a country and a continent.'},e:{ko:'둘 다 맞아요.',en:'Yes, both.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'러시아는 면적 기준 세계에서 가장 큰 나라다.',en:'Russia is the largest country by land area.'},e:{ko:'압도적으로 1위예요.',en:'By far the biggest.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'후지산이 있는 나라는?',en:'In which country is Mount Fuji?'},o:{ko:['일본','중국','한국'],en:['Japan','China','Korea']},e:{ko:'일본이에요.',en:'Japan.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'그레이트 배리어 리프(대보초)가 있는 나라는?',en:'The Great Barrier Reef lies off which country?'},o:{ko:['호주','브라질','멕시코'],en:['Australia','Brazil','Mexico']},e:{ko:'호주예요.',en:'Australia.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'사해는 염분이 높아 사람이 쉽게 뜬다.',en:'The Dead Sea is so salty that people float easily.'},e:{ko:'염도가 매우 높아요.',en:'Extremely salty water.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'세계에서 가장 작은 나라는?',en:'The smallest country in the world?'},o:{ko:['바티칸시국','모나코','나우루'],en:['Vatican City','Monaco','Nauru']},e:{ko:'바티칸시국이에요.',en:'Vatican City.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'나일강이 흐르는 대표적인 나라는?',en:'The Nile river is most associated with which country?'},o:{ko:['이집트','스페인','인도'],en:['Egypt','Spain','India']},e:{ko:'이집트예요.',en:'Egypt.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'그린란드는 세계에서 가장 큰 섬이다.',en:'Greenland is the world’s largest island.'},e:{ko:'대륙을 제외하면 1위예요.',en:'Largest, excluding continents.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'영구 거주민이 없는 대륙은?',en:'Which continent has no permanent residents?'},o:{ko:['남극','아프리카','유럽'],en:['Antarctica','Africa','Europe']},e:{ko:'남극이에요.',en:'Antarctica.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'나이아가라 폭포는 미국과 어느 나라 국경에 있나?',en:'Niagara Falls is on the US border with which country?'},o:{ko:['캐나다','멕시코','쿠바'],en:['Canada','Mexico','Cuba']},e:{ko:'캐나다예요.',en:'Canada.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'적도는 에콰도르라는 나라를 지난다.',en:'The equator passes through the country of Ecuador.'},e:{ko:'국명도 \u2018적도\u2019에서 왔어요.',en:'Its name even means “equator.”'}},
+ {r:'W',t:'mc',a:0,q:{ko:'\u2018구원의 예수상\u2019이 있는 도시는?',en:'Which city has the Christ the Redeemer statue?'},o:{ko:['리우데자네이루','리스본','마드리드'],en:['Rio de Janeiro','Lisbon','Madrid']},e:{ko:'브라질 리우예요.',en:'Rio de Janeiro.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'유럽과 아프리카 사이에 있는 바다는?',en:'Which sea lies between Europe and Africa?'},o:{ko:['지중해','발트해','홍해'],en:['Mediterranean','Baltic','Red Sea']},e:{ko:'지중해예요.',en:'The Mediterranean.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'아이슬란드에는 활화산이 있다.',en:'Iceland has active volcanoes.'},e:{ko:'화산 활동이 활발해요.',en:'Very volcanically active.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'기자의 피라미드와 가장 가까운 현대 도시는?',en:'Which modern city is closest to the Giza pyramids?'},o:{ko:['카이로','알렉산드리아','룩소르'],en:['Cairo','Alexandria','Luxor']},e:{ko:'카이로예요.',en:'Cairo.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'킬리만자로는 아프리카에서 가장 높은 산이다.',en:'Kilimanjaro is the highest mountain in Africa.'},e:{ko:'탄자니아에 있어요.',en:'In Tanzania.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'템스강이 흐르는 도시는?',en:'The Thames river flows through which city?'},o:{ko:['런던','더블린','에든버러'],en:['London','Dublin','Edinburgh']},e:{ko:'런던이에요.',en:'London.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'캐나다는 면적 기준 세계 2위 국가다.',en:'Canada is the second-largest country by area.'},e:{ko:'러시아 다음이에요.',en:'After Russia.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'세계에서 가장 큰 뜨거운 사막은?',en:'The largest hot desert in the world?'},o:{ko:['사하라','고비','아타카마'],en:['Sahara','Gobi','Atacama']},e:{ko:'사하라 사막이에요.',en:'The Sahara.'}},
+ // --- 아시아 ---
+ {r:'E',t:'mc',a:0,q:{ko:'타지마할이 있는 나라는?',en:'In which country is the Taj Mahal?'},o:{ko:['인도','파키스탄','이란'],en:['India','Pakistan','Iran']},e:{ko:'인도예요.',en:'India.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'자금성이 있는 도시는?',en:'In which city is the Forbidden City?'},o:{ko:['베이징','상하이','시안'],en:['Beijing','Shanghai','Xi’an']},e:{ko:'중국 베이징이에요.',en:'Beijing.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'앙코르와트 사원이 있는 나라는?',en:'In which country is Angkor Wat?'},o:{ko:['캄보디아','태국','베트남'],en:['Cambodia','Thailand','Vietnam']},e:{ko:'캄보디아예요.',en:'Cambodia.'}},
+ {r:'E',t:'ox',a:'O',q:{ko:'히말라야는 지구에서 가장 높은 산맥이다.',en:'The Himalayas are the highest mountain range on Earth.'},e:{ko:'에베레스트가 여기 있어요.',en:'Home to Everest.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'\u2018해가 뜨는 나라\u2019로 불리는 곳은?',en:'Which country is called the “Land of the Rising Sun”?'},o:{ko:['일본','중국','태국'],en:['Japan','China','Thailand']},e:{ko:'일본이에요.',en:'Japan.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'창강(양쯔강)이 흐르는 나라는?',en:'The Yangtze river is in which country?'},o:{ko:['중국','인도','한국'],en:['China','India','Korea']},e:{ko:'중국이에요. 아시아에서 가장 긴 강.',en:'China — Asia’s longest river.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'종이를 처음 발명한 나라는?',en:'Which country invented paper?'},o:{ko:['중국','이집트','그리스'],en:['China','Egypt','Greece']},e:{ko:'고대 중국이에요.',en:'Ancient China.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'화약을 처음 발명한 나라는?',en:'Where was gunpowder first invented?'},o:{ko:['중국','인도','영국'],en:['China','India','England']},e:{ko:'중국이에요.',en:'China.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'나침반을 처음 만든 나라는?',en:'Which country first developed the compass?'},o:{ko:['중국','이탈리아','이집트'],en:['China','Italy','Egypt']},e:{ko:'고대 중국이에요.',en:'Ancient China.'}},
+ {r:'E',t:'ox',a:'O',q:{ko:'차(茶) 문화는 중국에서 시작됐다.',en:'Tea culture originated in China.'},e:{ko:'이후 아시아 전역으로 퍼졌어요.',en:'Then spread across Asia.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'동남아시아에서 인구가 가장 많은 나라는?',en:'Most populous country in Southeast Asia?'},o:{ko:['인도네시아','베트남','필리핀'],en:['Indonesia','Vietnam','Philippines']},e:{ko:'인도네시아예요.',en:'Indonesia.'}},
+ // --- 한국 ---
+ {r:'E',t:'mc',a:0,q:{ko:'대한민국에서 가장 큰 섬은?',en:'The largest island in South Korea?'},o:{ko:['제주도','울릉도','강화도'],en:['Jeju','Ulleung','Ganghwa']},e:{ko:'제주도예요.',en:'Jeju Island.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'한국의 전통 의상은?',en:'The traditional Korean clothing is called?'},o:{ko:['한복','기모노','치파오'],en:['Hanbok','Kimono','Qipao']},e:{ko:'한복이에요.',en:'Hanbok.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'된장으로 끓인 한국 찌개는?',en:'Which Korean stew is made with soybean paste?'},o:{ko:['된장찌개','잡채','김밥'],en:['Doenjang-jjigae','Japchae','Gimbap']},e:{ko:'된장찌개예요.',en:'Doenjang-jjigae.'}},
+ {r:'E',t:'ox',a:'O',q:{ko:'서울은 한강을 사이에 두고 나뉜다.',en:'Seoul is divided by the Han River.'},e:{ko:'강북과 강남으로 나뉘죠.',en:'Into north and south of the river.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'한국 역사에서 가장 오래 이어진 왕조는?',en:'Which Korean dynasty lasted the longest?'},o:{ko:['조선','고려','신라'],en:['Joseon','Goryeo','Silla']},e:{ko:'조선, 약 500년이에요.',en:'Joseon, about 500 years.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'세종대왕이 그려진 한국 지폐는?',en:'King Sejong appears on which Korean banknote?'},o:{ko:['만 원','천 원','오만 원'],en:['10,000 won','1,000 won','50,000 won']},e:{ko:'만 원권이에요.',en:'The 10,000 won note.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'불고기의 주재료는?',en:'The main ingredient of bulgogi?'},o:{ko:['소고기','쌀','두부'],en:['Beef','Rice','Tofu']},e:{ko:'양념한 소고기예요.',en:'Marinated beef.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'\u2018한글날\u2019이 기념하는 것은?',en:'What does Hangeul Day celebrate?'},o:{ko:['한글 창제','광복','새해'],en:['Creation of Hangul','Independence','New Year']},e:{ko:'한글 반포를 기념해요.',en:'The Korean alphabet.'}},
+ {r:'E',t:'ox',a:'O',q:{ko:'떡볶이는 매콤한 떡 요리다.',en:'Tteokbokki is a spicy rice-cake dish.'},e:{ko:'대표적인 한국 길거리 음식이에요.',en:'A classic Korean street food.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'2018년 동계 올림픽이 열린 한국 도시는?',en:'Which Korean city hosted the 2018 Winter Olympics?'},o:{ko:['평창','서울','인천'],en:['Pyeongchang','Seoul','Incheon']},e:{ko:'평창이에요.',en:'Pyeongchang.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'대한민국 국기의 이름은?',en:'What is the name of the South Korean flag?'},o:{ko:['태극기','일장기','유니언잭'],en:['Taegeukgi','Hinomaru','Union Jack']},e:{ko:'태극기예요.',en:'Taegeukgi.'}},
+ {r:'E',t:'ox',a:'O',q:{ko:'인삼은 한국 전통 의학에서 귀하게 쓰인 뿌리식물이다.',en:'Ginseng is a root prized in Korean traditional medicine.'},e:{ko:'고려인삼이 특히 유명해요.',en:'Goryeo ginseng is famous.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'한반도 동쪽에 있는 바다는?',en:'Which sea is to the east of the Korean peninsula?'},o:{ko:['동해','서해','남중국해'],en:['East Sea','Yellow Sea','South China Sea']},e:{ko:'동해예요.',en:'The East Sea.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'한글이 창제된 세기는?',en:'In which century was Hangul created?'},o:{ko:['15세기','13세기','18세기'],en:['15th','13th','18th']},e:{ko:'1443년, 15세기예요.',en:'1443 — the 15th century.'}},
+ {r:'E',t:'ox',a:'O',q:{ko:'대한민국의 화폐 단위는 \u2018원\u2019이다.',en:'South Korea’s currency is the won.'},e:{ko:'기호는 ₩예요.',en:'Symbol: ₩.'}},
+ // --- 과학·우주 ---
+ {r:'S',t:'mc',a:0,q:{ko:'태양계 행성의 개수는?',en:'How many planets are in our solar system?'},o:{ko:['8개','9개','7개'],en:['8','9','7']},e:{ko:'2006년 이후 8개예요.',en:'8, since 2006.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'태양은 별이다.',en:'The Sun is a star.'},e:{ko:'스스로 빛을 내는 항성이에요.',en:'A self-luminous star.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'식물이 광합성에 흡수하는 기체는?',en:'Which gas do plants absorb for photosynthesis?'},o:{ko:['이산화탄소','산소','질소'],en:['Carbon dioxide','Oxygen','Nitrogen']},e:{ko:'이산화탄소를 흡수해요.',en:'Carbon dioxide.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'물은 수소와 산소로 이루어져 있다.',en:'Water is made of hydrogen and oxygen.'},e:{ko:'H₂O예요.',en:'H₂O.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'금(金)의 원소 기호는?',en:'The chemical symbol for gold?'},o:{ko:['Au','Go','Gd'],en:['Au','Go','Gd']},e:{ko:'라틴어 aurum에서 왔어요.',en:'From Latin “aurum.”'}},
+ {r:'S',t:'mc',a:0,q:{ko:'두드러진 고리로 유명한 행성은?',en:'Which planet is famous for prominent rings?'},o:{ko:['토성','화성','수성'],en:['Saturn','Mars','Mercury']},e:{ko:'토성이에요.',en:'Saturn.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'원자의 중심에 있는 것은?',en:'What sits at the center of an atom?'},o:{ko:['원자핵','전자','광자'],en:['Nucleus','Electron','Photon']},e:{ko:'원자핵이에요.',en:'The nucleus.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'사람은 산소를 들이마시고 이산화탄소를 내쉰다.',en:'Humans breathe in oxygen and breathe out carbon dioxide.'},e:{ko:'호흡의 기본이에요.',en:'Basic respiration.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'물이 어는 온도(섭씨)는?',en:'The freezing point of water in Celsius?'},o:{ko:['0도','32도','100도'],en:['0°C','32°C','100°C']},e:{ko:'0°C예요.',en:'0°C.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'번개는 태양 표면보다 더 뜨거울 수 있다.',en:'Lightning can be hotter than the Sun’s surface.'},e:{ko:'순간 약 3만 K에 달해요.',en:'It can hit ~30,000 K.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'\u2018만능 공혈자\u2019로 불리는 혈액형은?',en:'Which blood type is the universal red-cell donor?'},o:{ko:['O형 Rh-','AB형','A형'],en:['O negative','AB','A']},e:{ko:'O형 Rh−예요.',en:'O negative.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'빛의 속도는 대략?',en:'The speed of light is approximately?'},o:{ko:['초속 30만 km','초속 3만 km','초속 3천 km'],en:['300,000 km/s','30,000 km/s','3,000 km/s']},e:{ko:'약 30만 km/s예요.',en:'About 300,000 km/s.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'헬륨은 공기보다 가볍다.',en:'Helium is lighter than air.'},e:{ko:'그래서 풍선이 떠올라요.',en:'That’s why balloons float.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'행성이 태양 주위를 도는 것은 어떤 힘 때문인가?',en:'Which force keeps planets orbiting the Sun?'},o:{ko:['중력','자기력','마찰력'],en:['Gravity','Magnetism','Friction']},e:{ko:'중력이에요.',en:'Gravity.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'사람 몸은 대부분 물로 이루어져 있다.',en:'The human body is mostly water.'},e:{ko:'약 60% 정도예요.',en:'About 60%.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'성인의 뼈 중 가장 긴 뼈는?',en:'The longest bone in the adult human body?'},o:{ko:['넓적다리뼈(대퇴골)','정강이뼈','척추'],en:['Femur','Tibia','Spine']},e:{ko:'대퇴골이에요.',en:'The femur.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'녹은 철이 산소·물과 반응해 생긴다.',en:'Rust forms when iron reacts with oxygen and water.'},e:{ko:'산화 반응이에요.',en:'An oxidation reaction.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'달의 중력은 지구보다 약하다.',en:'The Moon’s gravity is weaker than Earth’s.'},e:{ko:'약 6분의 1이에요.',en:'About one-sixth.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'몸 전체에 피를 보내는 기관은?',en:'Which organ pumps blood through the body?'},o:{ko:['심장','간','폐'],en:['Heart','Liver','Lungs']},e:{ko:'심장이에요.',en:'The heart.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'몸 \u2018속\u2019 장기 중 가장 큰 것은?',en:'The largest internal organ?'},o:{ko:['간','심장','뇌'],en:['Liver','Heart','Brain']},e:{ko:'간이에요(피부는 외부 최대).',en:'The liver (skin is the largest overall).'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'식물은 산소를 만들어 낸다.',en:'Plants produce oxygen.'},e:{ko:'광합성의 결과예요.',en:'Through photosynthesis.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'식물만 먹는 동물을 뭐라고 하나?',en:'What do we call animals that eat only plants?'},o:{ko:['초식동물','육식동물','잡식동물'],en:['Herbivores','Carnivores','Omnivores']},e:{ko:'초식동물이에요.',en:'Herbivores.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'지구는 약 24시간에 한 번 자전한다.',en:'Earth rotates once about every 24 hours.'},e:{ko:'그래서 하루가 생겨요.',en:'That makes a day.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'지구와 크기가 가장 비슷한 행성은?',en:'Which planet is closest in size to Earth?'},o:{ko:['금성','화성','수성'],en:['Venus','Mars','Mercury']},e:{ko:'금성이에요.',en:'Venus.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'자석에는 N극과 S극이 있다.',en:'Magnets have a north and a south pole.'},e:{ko:'같은 극끼리는 밀어내요.',en:'Like poles repel.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'날씨를 연구하는 학문은?',en:'The study of weather is called?'},o:{ko:['기상학','지질학','생물학'],en:['Meteorology','Geology','Biology']},e:{ko:'기상학이에요.',en:'Meteorology.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'\u2018대적점\u2019으로 유명한 행성은?',en:'Which planet is famous for its “Great Red Spot”?'},o:{ko:['목성','화성','토성'],en:['Jupiter','Mars','Saturn']},e:{ko:'목성이에요. 거대한 폭풍이죠.',en:'Jupiter — a giant storm.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'혜성은 태양에 가까워지면 꼬리가 생긴다.',en:'A comet grows a tail when it nears the Sun.'},e:{ko:'얼음과 먼지가 분출돼요.',en:'Ice and dust stream off.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'달의 모양이 변하는 까닭은?',en:'Why does the Moon appear to change shape?'},o:{ko:['햇빛과 위치 변화','늘 지구 그림자','구름'],en:['Sunlight and position','Earth’s shadow always','Clouds']},e:{ko:'햇빛 받는 면이 달라서예요.',en:'The lit side we see changes.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'블랙홀은 중력이 강해 빛조차 빠져나오지 못한다.',en:'A black hole’s gravity is so strong that light cannot escape.'},e:{ko:'그래서 \u2018검게\u2019 보여요.',en:'Hence the name.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'물질의 기본 세 가지 상태는 고체, 액체, 그리고?',en:'The three common states of matter are solid, liquid, and?'},o:{ko:['기체','금속','빛'],en:['Gas','Metal','Light']},e:{ko:'기체예요.',en:'Gas.'}},
+ // --- 동물·자연 ---
+ {r:'S',t:'ox',a:'O',q:{ko:'사자 무리를 \u2018프라이드\u2019라고 부른다.',en:'A group of lions is called a “pride.”'},e:{ko:'맞아요.',en:'Correct.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'육지에서 가장 큰 동물은?',en:'The largest land animal?'},o:{ko:['아프리카코끼리','하마','코뿔소'],en:['African elephant','Hippo','Rhino']},e:{ko:'아프리카코끼리예요.',en:'The African elephant.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'상어는 나무보다 먼저 지구에 나타났다.',en:'Sharks appeared on Earth before trees did.'},e:{ko:'상어 약 4억 5천만 년 전이에요.',en:'Sharks predate trees.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'육지에서 가장 빠른 동물은?',en:'The fastest land animal?'},o:{ko:['치타','사자','말'],en:['Cheetah','Lion','Horse']},e:{ko:'치타예요.',en:'The cheetah.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'알을 낳는 포유류는?',en:'Which mammal lays eggs?'},o:{ko:['오리너구리','캥거루','돌고래'],en:['Platypus','Kangaroo','Dolphin']},e:{ko:'오리너구리예요.',en:'The platypus.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'나비는 발로 맛을 느낀다.',en:'A butterfly tastes with its feet.'},e:{ko:'발에 맛 감지기가 있어요.',en:'Taste sensors on its feet.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'지구 역사상 가장 큰 동물은?',en:'The largest animal known to have ever lived?'},o:{ko:['흰긴수염고래','코끼리','공룡'],en:['Blue whale','Elephant','Dinosaur']},e:{ko:'흰긴수염고래(대왕고래)예요.',en:'The blue whale.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'올빼미는 머리를 약 270도까지 돌릴 수 있다.',en:'Owls can rotate their heads about 270 degrees.'},e:{ko:'특수한 목뼈 구조 덕분이에요.',en:'Thanks to special neck bones.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'꿀벌이 꿀을 만들기 위해 모으는 것은?',en:'What do bees collect to make honey?'},o:{ko:['꽃꿀(넥타)','물','흙'],en:['Nectar','Water','Soil']},e:{ko:'꽃꿀(넥타)이에요.',en:'Flower nectar.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'불가사리에게는 뇌가 없다.',en:'A starfish has no brain.'},e:{ko:'신경망으로 움직여요.',en:'It uses a nerve network.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'다음 중 날지 못하는 새는?',en:'Which of these birds cannot fly?'},o:{ko:['타조','독수리','참새'],en:['Ostrich','Eagle','Sparrow']},e:{ko:'타조예요.',en:'The ostrich.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'다음 중 가장 오래 사는 동물은?',en:'Which of these typically lives the longest?'},o:{ko:['갈라파고스땅거북','개','고양이'],en:['Giant tortoise','Dog','Cat']},e:{ko:'땅거북은 100년 넘게 살아요.',en:'Giant tortoises top 100 years.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'개구리는 피부로도 물을 흡수한다.',en:'Frogs can absorb water through their skin.'},e:{ko:'그래서 촉촉함이 중요해요.',en:'So moisture matters.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'아기 캥거루를 부르는 말은?',en:'What is a baby kangaroo called?'},o:{ko:['조이','새끼곰','송아지'],en:['Joey','Cub','Calf']},e:{ko:'조이(joey)예요.',en:'A joey.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'뱀은 혀로 냄새를 \u2018맛본다\u2019.',en:'Snakes “smell” using their tongues.'},e:{ko:'공기 입자를 혀로 모아요.',en:'They sample air with the tongue.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'흔히 \u2018밀림의 왕\u2019으로 불리는 동물은?',en:'Which animal is called “king of the jungle”?'},o:{ko:['사자','호랑이','곰'],en:['Lion','Tiger','Bear']},e:{ko:'사자예요.',en:'The lion.'}},
+ // --- 역사 ---
+ {r:'W',t:'mc',a:0,q:{ko:'미국의 초대 대통령은?',en:'The first President of the United States?'},o:{ko:['조지 워싱턴','링컨','제퍼슨'],en:['George Washington','Lincoln','Jefferson']},e:{ko:'조지 워싱턴이에요.',en:'George Washington.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'타이태닉호는 1912년에 침몰했다.',en:'The Titanic sank in 1912.'},e:{ko:'첫 항해 중이었어요.',en:'On its maiden voyage.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'고대 올림픽이 시작된 나라는?',en:'Where did the ancient Olympics begin?'},o:{ko:['그리스','이탈리아','이집트'],en:['Greece','Italy','Egypt']},e:{ko:'고대 그리스예요.',en:'Ancient Greece.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'1492년 유럽인에게 아메리카를 알린 인물은?',en:'Who reached the Americas for Europe in 1492?'},o:{ko:['콜럼버스','마젤란','바스쿠 다가마'],en:['Columbus','Magellan','Vasco da Gama']},e:{ko:'크리스토퍼 콜럼버스예요.',en:'Christopher Columbus.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'제2차 세계대전은 1945년에 끝났다.',en:'World War II ended in 1945.'},e:{ko:'맞아요.',en:'Correct.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'로마 제국의 수도는?',en:'The capital of the Roman Empire?'},o:{ko:['로마','아테네','카이로'],en:['Rome','Athens','Cairo']},e:{ko:'로마예요.',en:'Rome.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'제2차 대전 시기 영국의 총리는?',en:'Britain’s PM during much of WWII?'},o:{ko:['처칠','대처','블레어'],en:['Churchill','Thatcher','Blair']},e:{ko:'윈스턴 처칠이에요.',en:'Winston Churchill.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'베를린 장벽은 1989년에 무너졌다.',en:'The Berlin Wall fell in 1989.'},e:{ko:'냉전 종식의 상징이에요.',en:'A symbol of the Cold War’s end.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'클레오파트라가 다스린 고대 나라는?',en:'Cleopatra ruled which ancient land?'},o:{ko:['이집트','그리스','페르시아'],en:['Egypt','Greece','Persia']},e:{ko:'고대 이집트예요.',en:'Ancient Egypt.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'시스티나 성당 천장화를 그린 화가는?',en:'Who painted the Sistine Chapel ceiling?'},o:{ko:['미켈란젤로','다빈치','라파엘로'],en:['Michelangelo','Da Vinci','Raphael']},e:{ko:'미켈란젤로예요.',en:'Michelangelo.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'금속활자 인쇄기는 구텐베르크가 발전시켰다.',en:'Gutenberg developed the movable-type printing press in Europe.'},e:{ko:'책의 대중화를 이끌었어요.',en:'It spread books widely.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'인류 최초로 우주에 간 사람은?',en:'The first human in space?'},o:{ko:['유리 가가린','닐 암스트롱','존 글렌'],en:['Yuri Gagarin','Neil Armstrong','John Glenn']},e:{ko:'유리 가가린(1961)이에요.',en:'Yuri Gagarin, 1961.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'라이트 형제는 최초의 동력 비행에 성공했다.',en:'The Wright brothers made the first powered flight.'},e:{ko:'1903년이에요.',en:'In 1903.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'칭기즈칸이 세운 제국은?',en:'Which empire did Genghis Khan found?'},o:{ko:['몽골 제국','로마 제국','오스만 제국'],en:['Mongol Empire','Roman Empire','Ottoman Empire']},e:{ko:'몽골 제국이에요.',en:'The Mongol Empire.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'나폴레옹이 이끈 나라는?',en:'Napoleon led which country?'},o:{ko:['프랑스','스페인','이탈리아'],en:['France','Spain','Italy']},e:{ko:'프랑스예요.',en:'France.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'최초로 노벨상을 받은 여성은?',en:'The first woman to win a Nobel Prize?'},o:{ko:['마리 퀴리','테레사 수녀','제인 구달'],en:['Marie Curie','Mother Teresa','Jane Goodall']},e:{ko:'마리 퀴리예요.',en:'Marie Curie.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'마추픽추를 세운 문명은?',en:'Which civilization built Machu Picchu?'},o:{ko:['잉카','마야','아즈텍'],en:['Inca','Maya','Aztec']},e:{ko:'잉카 문명이에요.',en:'The Inca.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'바이킹은 북유럽(스칸디나비아) 출신이다.',en:'The Vikings came from Scandinavia.'},e:{ko:'맞아요.',en:'Correct.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'냉전은 미국과 어느 나라 사이의 대립이었나?',en:'The Cold War was mainly between the US and?'},o:{ko:['소련','중국','독일'],en:['Soviet Union','China','Germany']},e:{ko:'소련이에요.',en:'The Soviet Union.'}},
+ // --- 예술·음악·문학 ---
+ {r:'W',t:'mc',a:0,q:{ko:'\u2018로미오와 줄리엣\u2019을 쓴 작가는?',en:'Who wrote “Romeo and Juliet”?'},o:{ko:['셰익스피어','디킨스','오스틴'],en:['Shakespeare','Dickens','Austen']},e:{ko:'셰익스피어예요.',en:'Shakespeare.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'\u2018별이 빛나는 밤\u2019은 반 고흐의 그림이다.',en:'“The Starry Night” was painted by Van Gogh.'},e:{ko:'대표작이에요.',en:'One of his most famous works.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'바이올린의 줄 개수는?',en:'How many strings does a standard violin have?'},o:{ko:['4개','6개','5개'],en:['4','6','5']},e:{ko:'4줄이에요.',en:'Four strings.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'\u2018사계\u2019를 작곡한 사람은?',en:'Who composed “The Four Seasons”?'},o:{ko:['비발디','바흐','모차르트'],en:['Vivaldi','Bach','Mozart']},e:{ko:'비발디예요.',en:'Vivaldi.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'\u2018오디세이아\u2019를 쓴 고대 시인은?',en:'Who wrote “The Odyssey”?'},o:{ko:['호메로스','베르길리우스','플라톤'],en:['Homer','Virgil','Plato']},e:{ko:'호메로스예요.',en:'Homer.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'루브르 박물관이 있는 도시는?',en:'In which city is the Louvre museum?'},o:{ko:['파리','로마','런던'],en:['Paris','Rome','London']},e:{ko:'파리예요.',en:'Paris.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'모차르트는 어린 나이부터 작곡을 시작했다.',en:'Mozart began composing as a young child.'},e:{ko:'신동으로 유명했어요.',en:'A famous child prodigy.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'수프 캔 팝아트로 유명한 예술가는?',en:'Which artist is famous for soup-can pop art?'},o:{ko:['앤디 워홀','피카소','모네'],en:['Andy Warhol','Picasso','Monet']},e:{ko:'앤디 워홀이에요.',en:'Andy Warhol.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'전통 \u2018하이쿠\u2019의 행(줄) 수는?',en:'How many lines does a haiku have?'},o:{ko:['3행','5행','4행'],en:['3','5','4']},e:{ko:'3행(5-7-5)이에요.',en:'Three lines (5-7-5).'}},
+ {r:'W',t:'mc',a:0,q:{ko:'\u2018돈키호테\u2019를 쓴 작가는?',en:'Who wrote “Don Quixote”?'},o:{ko:['세르반테스','단테','톨스토이'],en:['Cervantes','Dante','Tolstoy']},e:{ko:'세르반테스예요.',en:'Cervantes.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'발레는 이탈리아·프랑스 궁정에서 발전했다.',en:'Ballet developed in Italian and French royal courts.'},e:{ko:'르네상스 시기에 시작됐어요.',en:'Beginning in the Renaissance.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'검은 건반과 흰 건반이 있는 악기는?',en:'Which instrument has black and white keys?'},o:{ko:['피아노','기타','플루트'],en:['Piano','Guitar','Flute']},e:{ko:'피아노예요.',en:'The piano.'}},
+ // --- 음식·일상 ---
+ {r:'W',t:'ox',a:'O',q:{ko:'초콜릿은 카카오 콩으로 만든다.',en:'Chocolate is made from cacao beans.'},e:{ko:'맞아요.',en:'Correct.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'\u2018하루 한 알이면 의사가 필요 없다\u2019는 과일은?',en:'Which fruit “keeps the doctor away”?'},o:{ko:['사과','바나나','오렌지'],en:['Apple','Banana','Orange']},e:{ko:'사과예요.',en:'The apple.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'스시(초밥)는 어느 나라 음식인가?',en:'Sushi originates from which country?'},o:{ko:['일본','중국','한국'],en:['Japan','China','Korea']},e:{ko:'일본이에요.',en:'Japan.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'커피에는 카페인이 들어 있다.',en:'Coffee contains caffeine.'},e:{ko:'맞아요.',en:'Correct.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'피자의 본고장으로 알려진 나라는?',en:'Pizza is traditionally from which country?'},o:{ko:['이탈리아','그리스','미국'],en:['Italy','Greece','USA']},e:{ko:'이탈리아예요.',en:'Italy.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'무게당 가장 비싼 향신료는?',en:'The most expensive spice by weight?'},o:{ko:['사프란','후추','계피'],en:['Saffron','Pepper','Cinnamon']},e:{ko:'사프란이에요.',en:'Saffron.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'타코는 어느 나라 음식인가?',en:'Tacos come from which country?'},o:{ko:['멕시코','스페인','페루'],en:['Mexico','Spain','Peru']},e:{ko:'멕시코예요.',en:'Mexico.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'두부의 주재료는?',en:'Tofu is made mainly from?'},o:{ko:['콩(대두)','쌀','밀'],en:['Soybeans','Rice','Wheat']},e:{ko:'대두(콩)예요.',en:'Soybeans.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'포도를 발효시켜 만드는 술은?',en:'Which drink is made from fermented grapes?'},o:{ko:['와인','맥주','위스키'],en:['Wine','Beer','Whisky']},e:{ko:'와인이에요.',en:'Wine.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'\u2018카레\u2019와 가장 깊이 연관된 나라는?',en:'Curry is most strongly associated with?'},o:{ko:['인도','프랑스','러시아'],en:['India','France','Russia']},e:{ko:'인도예요.',en:'India.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'소금은 옛날에 화폐처럼 쓰이기도 했다.',en:'Salt was once used as a form of payment.'},e:{ko:'\u2018샐러리(급여)\u2019의 어원이에요.',en:'Origin of the word “salary.”'}},
+ {r:'W',t:'mc',a:0,q:{ko:'크루아상과 연관된 나라는?',en:'Croissants are associated with which country?'},o:{ko:['프랑스','독일','이탈리아'],en:['France','Germany','Italy']},e:{ko:'프랑스예요.',en:'France.'}},
+ // --- 기술·현대 ---
+ {r:'W',t:'mc',a:0,q:{ko:'스티브 잡스와 함께 애플을 공동 창업한 사람은?',en:'Who co-founded Apple with Steve Jobs?'},o:{ko:['스티브 워즈니악','빌 게이츠','일론 머스크'],en:['Steve Wozniak','Bill Gates','Elon Musk']},e:{ko:'스티브 워즈니악이에요.',en:'Steve Wozniak.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'WWW는 World Wide Web의 약자다.',en:'WWW stands for World Wide Web.'},e:{ko:'맞아요.',en:'Correct.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'CPU는 무엇의 약자인가?',en:'What does “CPU” stand for?'},o:{ko:['중앙처리장치','컴퓨터 전원장치','중앙프로그램'],en:['Central Processing Unit','Computer Power Unit','Central Program Utility']},e:{ko:'Central Processing Unit이에요.',en:'Central Processing Unit.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'안드로이드 운영체제를 만든 회사는?',en:'Which company makes the Android OS?'},o:{ko:['구글','애플','마이크로소프트'],en:['Google','Apple','Microsoft']},e:{ko:'구글이에요.',en:'Google.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'첫 아이폰은 2007년에 출시됐다.',en:'The first iPhone was released in 2007.'},e:{ko:'맞아요.',en:'Correct.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'AI는 무엇의 약자인가?',en:'What does “AI” stand for?'},o:{ko:['인공지능','자동 인터넷','응용 정보'],en:['Artificial Intelligence','Automated Internet','Applied Information']},e:{ko:'Artificial Intelligence예요.',en:'Artificial Intelligence.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'1바이트는 8비트로 이루어진다.',en:'One byte is made of 8 bits.'},e:{ko:'맞아요.',en:'Correct.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'이메일은 월드와이드웹(WWW)보다 먼저 등장했다.',en:'Email is older than the World Wide Web.'},e:{ko:'이메일 1970년대, 웹 1989년.',en:'Email 1970s; web 1989.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'\u2018@\u2019 기호가 가장 흔히 쓰이는 곳은?',en:'The “@” symbol is most commonly used in?'},o:{ko:['이메일 주소','전화번호','계좌번호'],en:['Email addresses','Phone numbers','Bank codes']},e:{ko:'이메일 주소예요.',en:'Email addresses.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'와이파이는 케이블 없이 기기를 연결해 준다.',en:'Wi-Fi connects devices without cables.'},e:{ko:'무선 연결이에요.',en:'A wireless connection.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'마이크로소프트를 공동 창업한 사람은?',en:'Who co-founded Microsoft?'},o:{ko:['빌 게이츠','제프 베이조스','마크 저커버그'],en:['Bill Gates','Jeff Bezos','Mark Zuckerberg']},e:{ko:'빌 게이츠예요.',en:'Bill Gates.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'QR코드에는 웹사이트 링크를 담을 수 있다.',en:'A QR code can store website links.'},e:{ko:'맞아요.',en:'Correct.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'컴퓨터의 임시 작업 메모리를 부르는 말은?',en:'A computer’s temporary working memory is called?'},o:{ko:['RAM','ROM','CPU'],en:['RAM','ROM','CPU']},e:{ko:'RAM이에요.',en:'RAM.'}},
+ // --- 스포츠 ---
+ {r:'W',t:'mc',a:0,q:{ko:'축구는 한 팀이 몇 명으로 경기하나?',en:'How many players per soccer team on the field?'},o:{ko:['11명','9명','7명'],en:['11','9','7']},e:{ko:'11명이에요.',en:'Eleven.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'하계 올림픽은 보통 4년마다 열린다.',en:'The Summer Olympics are usually held every four years.'},e:{ko:'맞아요.',en:'Correct.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'\u2018홈런\u2019이 나오는 스포츠는?',en:'In which sport do you score a “home run”?'},o:{ko:['야구','테니스','골프'],en:['Baseball','Tennis','Golf']},e:{ko:'야구예요.',en:'Baseball.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'올림픽기에 그려진 고리의 개수는?',en:'How many rings are on the Olympic flag?'},o:{ko:['5개','4개','6개'],en:['5','4','6']},e:{ko:'5대륙을 뜻하는 5개예요.',en:'Five, for five continents.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'마라톤 정식 거리는 약 42km다.',en:'A marathon is about 42 kilometers.'},e:{ko:'정확히는 42.195km.',en:'Exactly 42.195 km.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'\u2018셔틀콕\u2019을 쓰는 스포츠는?',en:'Which sport uses a shuttlecock?'},o:{ko:['배드민턴','테니스','스쿼시'],en:['Badminton','Tennis','Squash']},e:{ko:'배드민턴이에요.',en:'Badminton.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'농구에서 자유투 1개의 점수는?',en:'How many points is a basketball free throw?'},o:{ko:['1점','2점','3점'],en:['1','2','3']},e:{ko:'1점이에요.',en:'One point.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'\u2018월드컵\u2019이 열리는 대표 종목은?',en:'The World Cup is most associated with which sport?'},o:{ko:['축구','럭비','크리켓'],en:['Soccer','Rugby','Cricket']},e:{ko:'축구예요.',en:'Soccer (football).'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'테니스에서 0점을 \u2018러브(love)\u2019라고 부른다.',en:'In tennis, a score of zero is called “love.”'},e:{ko:'맞아요.',en:'Correct.'}},
+ // --- 인체·감각 ---
+ {r:'S',t:'ox',a:'O',q:{ko:'뇌는 전기 신호로 정보를 주고받는다.',en:'The brain uses electrical signals to communicate.'},e:{ko:'뉴런이 신호를 전달해요.',en:'Neurons fire signals.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'햇빛을 받으면 몸이 만드는 비타민은?',en:'Which vitamin does sunlight help your body make?'},o:{ko:['비타민 D','비타민 C','비타민 A'],en:['Vitamin D','Vitamin C','Vitamin A']},e:{ko:'비타민 D예요.',en:'Vitamin D.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'사람 몸에서 가장 단단한 부분은?',en:'The hardest substance in the human body?'},o:{ko:['치아 에나멜','뼈','손톱'],en:['Tooth enamel','Bone','Nail']},e:{ko:'치아의 법랑질(에나멜)이에요.',en:'Tooth enamel.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'전통적으로 사람의 기본 감각은 다섯 가지다.',en:'Traditionally, humans have five basic senses.'},e:{ko:'시각·청각·후각·미각·촉각이에요.',en:'Sight, hearing, smell, taste, touch.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'눈에 들어오는 빛의 양을 조절하는 부분은?',en:'Which part of the eye controls how much light enters?'},o:{ko:['동공','각막','망막'],en:['Pupil','Cornea','Retina']},e:{ko:'동공이에요.',en:'The pupil.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'성인은 보통 사랑니를 포함해 치아가 32개다.',en:'Adults usually have 32 teeth including wisdom teeth.'},e:{ko:'맞아요.',en:'Correct.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'사람 심장의 방(房)은 몇 개인가?',en:'How many chambers does the human heart have?'},o:{ko:['4개','2개','3개'],en:['4','2','3']},e:{ko:'심방 2 + 심실 2 = 4개예요.',en:'Two atria + two ventricles.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'맛은 후각과 밀접하게 연결돼 있다.',en:'Your sense of taste is closely linked to smell.'},e:{ko:'코가 막히면 맛이 둔해져요.',en:'A blocked nose dulls flavor.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'생명체의 가장 작은 기본 단위는?',en:'The smallest basic unit of life?'},o:{ko:['세포','원자','분자'],en:['Cell','Atom','Molecule']},e:{ko:'세포예요.',en:'The cell.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'머리카락과 손톱은 케라틴이라는 단백질로 되어 있다.',en:'Hair and nails are made of a protein called keratin.'},e:{ko:'맞아요.',en:'Correct.'}},
+ // --- 추가: 한국·아시아 ---
+ {r:'E',t:'mc',a:0,q:{ko:'늦가을에 김치를 한꺼번에 담그는 한국 풍습은?',en:'What is the Korean tradition of making kimchi in late autumn?'},o:{ko:['김장','단오','동지'],en:['Kimjang','Dano','Dongji']},e:{ko:'김장이에요. 유네스코 유산이죠.',en:'Kimjang — a UNESCO heritage.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'판소리에서 북을 치며 추임새를 넣는 사람은?',en:'In pansori, who drums and shouts encouragement?'},o:{ko:['고수','명창','광대'],en:['Gosu (drummer)','Singer','Clown']},e:{ko:'고수예요.',en:'The gosu (drummer).'}},
+ {r:'E',t:'ox',a:'O',q:{ko:'한국의 설날은 음력 1월 1일이다.',en:'Korean Seollal falls on the first day of the lunar calendar.'},e:{ko:'음력 새해예요.',en:'The lunar new year.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'태국의 수도는?',en:'The capital of Thailand?'},o:{ko:['방콕','하노이','마닐라'],en:['Bangkok','Hanoi','Manila']},e:{ko:'방콕이에요.',en:'Bangkok.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'베트남의 수도는?',en:'The capital of Vietnam?'},o:{ko:['하노이','호찌민','다낭'],en:['Hanoi','Ho Chi Minh City','Da Nang']},e:{ko:'하노이예요.',en:'Hanoi.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'인도의 수도는?',en:'The capital of India?'},o:{ko:['뉴델리','뭄바이','콜카타'],en:['New Delhi','Mumbai','Kolkata']},e:{ko:'뉴델리예요.',en:'New Delhi.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'중국의 수도는?',en:'The capital of China?'},o:{ko:['베이징','상하이','광저우'],en:['Beijing','Shanghai','Guangzhou']},e:{ko:'베이징이에요.',en:'Beijing.'}},
+ {r:'E',t:'ox',a:'O',q:{ko:'만리장성은 중국에 있는 거대한 성벽이다.',en:'The Great Wall is a vast fortification in China.'},e:{ko:'길이가 수천 km예요.',en:'Thousands of km long.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'일본의 전통 의상은?',en:'The traditional clothing of Japan?'},o:{ko:['기모노','한복','아오자이'],en:['Kimono','Hanbok','Áo dài']},e:{ko:'기모노예요.',en:'The kimono.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'한반도에서 가장 높은 산은?',en:'The highest mountain on the Korean peninsula?'},o:{ko:['백두산','한라산','지리산'],en:['Baekdusan','Hallasan','Jirisan']},e:{ko:'백두산(약 2,744m)이에요.',en:'Baekdusan (~2,744m).'}},
+ {r:'E',t:'ox',a:'O',q:{ko:'제주도는 화산섬이다.',en:'Jeju Island is a volcanic island.'},e:{ko:'한라산도 화산이에요.',en:'Hallasan is a volcano.'}},
+ {r:'E',t:'mc',a:0,q:{ko:'부산은 한국의 어느 방향에 있나?',en:'In which part of Korea is Busan located?'},o:{ko:['남동부','북서부','중부'],en:['Southeast','Northwest','Center']},e:{ko:'남동쪽 항구 도시예요.',en:'A southeastern port city.'}},
+ // --- 추가: 과학·자연 ---
+ {r:'S',t:'ox',a:'O',q:{ko:'소금은 나트륨과 염소로 이루어진다.',en:'Table salt is made of sodium and chlorine.'},e:{ko:'화학식은 NaCl이에요.',en:'Formula: NaCl.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'가장 가벼운 원소는?',en:'The lightest chemical element?'},o:{ko:['수소','헬륨','산소'],en:['Hydrogen','Helium','Oxygen']},e:{ko:'수소예요.',en:'Hydrogen.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'무지개는 흔히 일곱 색으로 표현된다.',en:'A rainbow is commonly described as having seven colors.'},e:{ko:'빨주노초파남보예요.',en:'Red to violet.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'혈액에서 산소를 운반하는 세포는?',en:'Which blood cells carry oxygen?'},o:{ko:['적혈구','백혈구','혈소판'],en:['Red blood cells','White blood cells','Platelets']},e:{ko:'적혈구예요.',en:'Red blood cells.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'박테리아는 보통 맨눈으로 볼 수 없다.',en:'Bacteria usually cannot be seen with the naked eye.'},e:{ko:'현미경이 필요해요.',en:'You need a microscope.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'지구에서 가장 깊은 바다 해구는?',en:'The deepest ocean trench on Earth?'},o:{ko:['마리아나 해구','일본 해구','페루 해구'],en:['Mariana Trench','Japan Trench','Peru Trench']},e:{ko:'마리아나 해구예요.',en:'The Mariana Trench.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'사람의 정상 체온은 대략?',en:'The normal human body temperature is about?'},o:{ko:['37도','30도','42도'],en:['37°C','30°C','42°C']},e:{ko:'약 36.5\u201337°C예요.',en:'About 36.5\u201337°C.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'소리는 벽 등에 반사되어 메아리로 돌아올 수 있다.',en:'Sound can bounce back as an echo.'},e:{ko:'반사된 소리예요.',en:'Reflected sound.'}},
+ {r:'S',t:'mc',a:0,q:{ko:'식물이 빛으로 양분을 만드는 과정은?',en:'The process where plants make food from light?'},o:{ko:['광합성','호흡','발효'],en:['Photosynthesis','Respiration','Fermentation']},e:{ko:'광합성이에요.',en:'Photosynthesis.'}},
+ {r:'S',t:'ox',a:'O',q:{ko:'지구는 약 1년에 걸쳐 태양을 한 바퀴 돈다.',en:'Earth orbits the Sun about once a year.'},e:{ko:'공전 주기예요.',en:'One revolution per year.'}},
+ // --- 추가: 세계 ---
+ {r:'W',t:'mc',a:0,q:{ko:'캐나다의 수도는?',en:'The capital of Canada?'},o:{ko:['오타와','토론토','밴쿠버'],en:['Ottawa','Toronto','Vancouver']},e:{ko:'오타와예요.',en:'Ottawa.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'독일의 수도는?',en:'The capital of Germany?'},o:{ko:['베를린','뮌헨','함부르크'],en:['Berlin','Munich','Hamburg']},e:{ko:'베를린이에요.',en:'Berlin.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'스페인의 수도는?',en:'The capital of Spain?'},o:{ko:['마드리드','바르셀로나','세비야'],en:['Madrid','Barcelona','Seville']},e:{ko:'마드리드예요.',en:'Madrid.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'미국의 수도는 워싱턴 D.C.다.',en:'The capital of the USA is Washington, D.C.'},e:{ko:'뉴욕이 아니에요.',en:'Not New York.'}},
+ {r:'W',t:'mc',a:0,q:{ko:'무지개에서 가장 바깥쪽에 오는 색은?',en:'Which color is on the outer edge of a rainbow?'},o:{ko:['빨강','보라','초록'],en:['Red','Violet','Green']},e:{ko:'빨강이에요.',en:'Red.'}},
+ {r:'W',t:'ox',a:'O',q:{ko:'영어 알파벳은 26개의 글자로 이루어진다.',en:'The English alphabet has 26 letters.'},e:{ko:'맞아요.',en:'Correct.'}}
+];
+
+/* ----- state ----- */
+var lang = (function(){
+  var saved = store.get('oo_lang');
+  if(saved==='ko'||saved==='en') return saved;
+  return /^ko/.test(navigator.language||'') ? 'ko' : 'en';
+})();
+var streak = 0;
+var best = parseInt(store.get('oo_best')||'0',10) || 0;
+var order = [];
+var idx = 0;
+var answered = false;
+
+/* ----- elements ----- */
+var $ = function(id){ return document.getElementById(id); };
+var qcard=$('qcard'), scrim=$('scrim'), sheetBody=$('sheetBody');
+
+/* ----- shuffle + draw next question ----- */
+function reshuffle(){
+  order = Q.map(function(_,i){return i;});
+  for(var i=order.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=order[i];order[i]=order[j];order[j]=t; }
+  idx=0;
+}
+function nextQ(){
+  if(idx>=order.length) reshuffle();
+  render(Q[order[idx++]]);
+}
+
+/* ----- render a question ----- */
+function render(item){
+  answered=false;
+  var L=T[lang];
+  var catLabel = item.r==='E'?L.east:(item.r==='W'?L.west:L.sci);
+  var html='<span class="cat">'+catLabel+'</span>';
+  html+='<h1 class="q">'+item.q[lang]+'</h1>';
+  if(item.t==='ox'){
+    html+='<div class="opts ox">'
+      +'<button class="opt" data-v="O"><span class="glyph">O</span><span>'+L.truth+'</span></button>'
+      +'<button class="opt" data-v="X"><span class="glyph">✕</span><span>'+L.falseTxt+'</span></button>'
+      +'</div>';
+  } else {
+    html+='<div class="opts">';
+    for(var i=0;i<item.o[lang].length;i++){
+      html+='<button class="opt" data-v="'+i+'">'+item.o[lang][i]+'</button>';
+    }
+    html+='</div>';
+  }
+  qcard.innerHTML=html;
+  var btns=qcard.querySelectorAll('.opt');
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){ choose(item, b.getAttribute('data-v')); });
+  });
+}
+
+/* ----- handle an answer ----- */
+function choose(item, val){
+  if(answered) return; answered=true;
+  var L=T[lang];
+  var correctVal = (item.t==='ox') ? item.a : String(item.a);
+  var isCorrect = (val===correctVal);
+  var btns=qcard.querySelectorAll('.opt');
+  btns.forEach(function(b){
+    b.disabled=true;
+    var v=b.getAttribute('data-v');
+    if(v===correctVal){ b.classList.add('correct'); if(isCorrect) addTag(b,L.tagAns); }
+    else if(v===val){ b.classList.add('wrong'); addTag(b,L.tagPicked); }
+    else b.classList.add('dim');
+  });
+  // explanation inline
+  var ex=document.createElement('div');
+  ex.className='explain';
+  ex.innerHTML='<b>'+(isCorrect?'⭕':'❌')+'</b> '+item.e[lang];
+  qcard.appendChild(ex);
+
+  if(isCorrect){
+    streak++;
+    if(streak>best){ best=streak; store.set('oo_best',String(best)); }
+    updateScore();
+    track('answer_correct',{streak:streak});
+    var nx=document.createElement('button');
+    nx.className='next'; nx.textContent=L.next;
+    nx.addEventListener('click', nextQ);
+    qcard.appendChild(nx);
+  } else {
+    track('answer_wrong',{streak_ended:streak});
+    var ended=streak;
+    setTimeout(function(){ showResult(ended); }, 650);
+  }
+}
+function addTag(btn,text){
+  if(btn.querySelector('.tag')) return;
+  var t=document.createElement('span'); t.className='tag'; t.textContent=text; btn.appendChild(t);
+}
+
+/* ----- score line ----- */
+function updateScore(){ $('streak').textContent=streak; $('best').textContent=best; }
+
+/* ----- result / certificate sheet ----- */
+function showResult(ended){
+  var L=T[lang];
+  var rank=rankOf(ended);
+  var dateStr=new Date().toLocaleDateString(lang==='ko'?'ko-KR':'en-US',{year:'numeric',month:'short',day:'numeric'});
+  var serial='OO-'+String(Date.now()).slice(-6);
+  var shopUrl = lang==='ko'?COUPANG_URL:AMAZON_URL;
+  var html='';
+
+  if(ended>=1){
+    html+='<div class="result-head"><h2>'+L.resTitle+'</h2><p>'+L.resSub(ended)+'</p></div>';
+    html+='<div class="cert" id="cert">'
+      +'<div class="seal"><svg viewBox="0 0 100 90" aria-hidden="true"><circle cx="50" cy="30" r="19" fill="none" stroke="currentColor" stroke-width="11"/><line x1="50" y1="52" x2="50" y2="79" stroke="currentColor" stroke-width="11" stroke-linecap="round"/></svg></div>'
+      +'<div class="kicker">'+L.certKicker+'</div>'
+      +'<div class="big">'+ended+'</div>'
+      +'<div class="unit">'+L.unit+'</div>'
+      +'<div class="rank">'+rank[lang]+'</div>'
+      +'<div class="meta"><span>'+serial+'</span><span>'+L.issued+' '+dateStr+'</span></div>'
+      +'</div>';
+    html+='<div class="actions">'
+      +'<button class="btn-save" id="saveBtn">'+L.save+'</button>'
+      +'<button class="btn-share" id="shareBtn">'+L.share+'</button>'
+      +'</div>';
+  } else {
+    html+='<div class="result-head"><h2>'+L.res0Title+'</h2><p>'+L.res0Sub+'</p></div>';
+  }
+
+  html+='<a class="shop" id="shopLink" href="'+shopUrl+'" target="_blank" rel="noopener nofollow sponsored">📚 '+L.shop+'</a>';
+  html+='<button class="retry" id="retryBtn">'+L.retry+' →</button>';
+
+  sheetBody.innerHTML=html;
+  scrim.classList.add('show');
+
+  var rb=$('retryBtn');
+  rb.addEventListener('click', function(){
+    scrim.classList.remove('show');
+    streak=0; updateScore();
+    track('retry',{});
+    setTimeout(nextQ,250);
+  });
+  var sl=$('shopLink');
+  sl.addEventListener('click', function(){ track('shop_click',{region:lang==='ko'?'KR':'EN',streak_ended:ended}); });
+
+  if(ended>=1){
+    $('saveBtn').addEventListener('click', function(){ saveCert(ended,rank,dateStr,serial); });
+    $('shareBtn').addEventListener('click', function(){ shareCert(ended); });
+  }
+}
+
+/* ----- draw certificate to canvas (PNG) ----- */
+function buildCanvas(ended,rank,dateStr,serial){
+  var W=1080,H=1350,c=document.createElement('canvas');
+  c.width=W;c.height=H;var x=c.getContext('2d');
+  // bg
+  x.fillStyle='#f5f5f7';x.fillRect(0,0,W,H);
+  // card
+  var m=70, cardW=W-m*2, cardH=H-m*2;
+  roundRect(x,m,m,cardW,cardH,40); x.fillStyle='#ffffff';x.fill();
+  x.lineWidth=2;x.strokeStyle='rgba(0,0,0,.08)';x.stroke();
+  // soft top glow
+  var g=x.createRadialGradient(W/2,m,40,W/2,m,cardW*0.8);
+  g.addColorStop(0,'rgba(0,113,227,.08)');g.addColorStop(1,'rgba(0,113,227,0)');
+  x.fillStyle=g;roundRect(x,m,m,cardW,cardH,40);x.fill();
+  x.textAlign='center';
+  // logo mark
+  drawMark(x,W/2,m+150,1.7,'#3d444b');
+  // kicker
+  x.fillStyle='#6e6e73';x.font='600 30px -apple-system,Helvetica,Arial,sans-serif';
+  x.fillText((T[lang].certKicker).toUpperCase(), W/2, m+340);
+  // big number
+  x.fillStyle='#1d1d1f';x.font='800 280px -apple-system,Helvetica,Arial,sans-serif';
+  x.fillText(String(ended), W/2, m+640);
+  // unit
+  x.fillStyle='#6e6e73';x.font='600 40px -apple-system,Helvetica,Arial,sans-serif';
+  x.fillText(T[lang].unit, W/2, m+710);
+  // rank pill
+  var rk=rank[lang];x.font='700 44px -apple-system,Helvetica,Arial,sans-serif';
+  var tw=x.measureText(rk).width, pw=tw+90, px=W/2-pw/2, py=m+770, ph=86;
+  roundRect(x,px,py,pw,ph,43);x.fillStyle='rgba(0,113,227,.08)';x.fill();
+  x.lineWidth=2;x.strokeStyle='rgba(0,113,227,.3)';x.stroke();
+  x.fillStyle='#0071e3';x.fillText(rk,W/2,py+58);
+  // footer meta
+  x.fillStyle='#6e6e73';x.font='500 28px -apple-system,Helvetica,Arial,sans-serif';
+  x.textAlign='left';x.fillText(serial, m+60, H-m-90);
+  x.textAlign='right';x.fillText(T[lang].issued+' '+dateStr, W-m-60, H-m-90);
+  x.textAlign='center';x.fillStyle='#1d1d1f';x.font='600 32px -apple-system,Helvetica,Arial,sans-serif';
+  x.fillText('OnlyOne · 그거알아?  Did You Know?', W/2, H-m-130);
+  return c;
+}
+function drawMark(ctx,cx,cy,s,color){
+  ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineCap='round';
+  ctx.lineWidth=22*s;
+  ctx.beginPath();ctx.arc(cx,cy-20*s,38*s,0,Math.PI*2);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx,cy+24*s);ctx.lineTo(cx,cy+78*s);ctx.stroke();
+  ctx.restore();
+}
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
+}
+
+function saveCert(ended,rank,dateStr,serial){
+  try{
+    var c=buildCanvas(ended,rank,dateStr,serial);
+    c.toBlob(function(blob){
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement('a');
+      a.href=url;a.download='onlyone-그거알아-'+ended+'.png';
+      document.body.appendChild(a);a.click();a.remove();
+      setTimeout(function(){URL.revokeObjectURL(url);},1000);
+      toast(T[lang].saved);
+      track('card_save',{streak:ended});
+    },'image/png');
+  }catch(e){ toast('⚠'); }
+}
+
+function shareUrl(ended){
+  var base=location.origin+location.pathname;
+  return base+'?s='+ended;
+}
+function shareCert(ended){
+  var L=T[lang];
+  var url=shareUrl(ended);
+  var text=L.shareText(ended);
+  track('card_share',{streak:ended});
+  // try sharing the image too
+  function fallbackLink(){
+    if(navigator.share){
+      navigator.share({title:'그거알아? · Did You Know?',text:text,url:url}).catch(function(){copyLink(url);});
+    } else copyLink(url);
+  }
+  try{
+    var c=buildCanvas(ended,rankOf(ended),new Date().toLocaleDateString(lang==='ko'?'ko-KR':'en-US'),'OO-'+String(Date.now()).slice(-6));
+    c.toBlob(function(blob){
+      var file=new File([blob],'onlyone.png',{type:'image/png'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        navigator.share({files:[file],title:'그거알아?',text:text+'\n'+url}).catch(fallbackLink);
+      } else fallbackLink();
+    },'image/png');
+  }catch(e){ fallbackLink(); }
+}
+function copyLink(url){
+  try{ navigator.clipboard.writeText(url); toast(T[lang].copied); }
+  catch(e){ prompt('', url); }
+}
+
+/* ----- toast ----- */
+var toastTimer;
+function toast(msg){
+  var t=$('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('show');},1800);
+}
+
+/* ----- language ----- */
+function applyLang(){
+  document.documentElement.lang=lang;
+  var L=T[lang];
+  $('langKo').classList.toggle('on',lang==='ko');
+  $('langEn').classList.toggle('on',lang==='en');
+  $('lblStreak').textContent=L.streak;
+  $('lblBest').textContent=L.best;
+  $('footTagline').textContent=L.tagline;
+  setCookieText();
+  if(currentItemIndex>=0) render(Q[currentItemIndex]); // re-render current if mid-question
+}
+var currentItemIndex=-1;
+// wrap render to remember current item
+var _render=render;
+render=function(item){ currentItemIndex=Q.indexOf(item); answered=false; _render(item); };
+
+function setLang(l){ lang=l; store.set('oo_lang',l); applyLang(); track('lang_switch',{lang:l}); }
+$('langKo').addEventListener('click',function(){setLang('ko');});
+$('langEn').addEventListener('click',function(){setLang('en');});
+$('brandLink').addEventListener('click',function(){track('onlyone_click',{});});
+
+/* ----- cookie consent ----- */
+function setCookieText(){
+  var L=T[lang];
+  $('cookieText').innerHTML = IS_STRICT ? L.cookie : L.cookieSoft;
+  $('cAccept').textContent = IS_STRICT ? L.accept : L.ok;
+  $('cDecline').textContent = L.decline;
+  $('cDecline').style.display = IS_STRICT ? '' : 'none';
+}
+function showCookieIfNeeded(){
+  var choice=store.get('oo_consent');
+  if(choice==='granted' || choice==='denied') return; // already chose
+  if(!IS_STRICT){
+    // 비EEA: 분석 기본 허용, 안내 배너만 (확인 시 닫힘)
+    $('cookie').classList.add('show');
+  } else {
+    $('cookie').classList.add('show');
+  }
+}
+$('cAccept').addEventListener('click',function(){
+  gtag('consent','update',{analytics_storage:'granted'});
+  store.set('oo_consent','granted');
+  $('cookie').classList.remove('show');
+  track('consent',{value:'granted'});
+});
+$('cDecline').addEventListener('click',function(){
+  gtag('consent','update',{analytics_storage:'denied'});
+  store.set('oo_consent','denied');
+  $('cookie').classList.remove('show');
+});
+
+/* ----- incoming share ----- */
+function checkInvite(){
+  var p=new URLSearchParams(location.search);
+  var s=parseInt(p.get('s')||'',10);
+  if(s>0){
+    $('inviteText').innerHTML=T[lang].invite(s);
+    $('invite').hidden=false;
+    track('arrive_from_share',{target:s});
+  }
+}
+
+/* ----- init ----- */
+reshuffle();
+applyLang();
+updateScore();
+checkInvite();
+nextQ();
+showCookieIfNeeded();
+</script>
+</body>
+</html>
